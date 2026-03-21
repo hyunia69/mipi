@@ -1,0 +1,74 @@
+Dear Hyun,
+
+Thank you for your detailed report. 
+
+For Issue 1 :
+
+Our custom image is for 1080/60 FPS. If you are connecting 30FPS camera module, we have to modify the driver accordingly. On the other hand, if you can change the resolution to 60 FPS, this issue can be sorted out. However, if the issue still persists, please refer the response for your question 4 under issue 1
+
+For issue 2, please find the reply given embedded in your e-mail. 
+
+Also please share the screen shot of I2Cdetect, using the below command, for us to understand your situation better. 
+
+Output of: i2cdetect -y -r 9 && i2cdetect -y -r 2 (screenshot or text)
+For other additional issues, please share the below details
+
+Host PC used for flashing (OS version + SDK Manager version).
+Filtered dmesg: dmesg for configuration check
+I have answered your questions in the previous email reply (inline with your original message). 
+
+Please check that response.
+
+Thank you.
+
+
+
+Ans:-    Yes, the board supports 1080p30 and 720p60 LVDS input
+
+2. If the camera outputs 1080p30 by default, how can we configure the LT9211C to accept it?
+
+Ans:- Configuration must currently be done by modifying the source code. We are working on improvements so users can adjust settings via a simple API in the future.
+
+3. Is there a register map or configuration guide for the LT9211C on your board?
+
+Ans:- No public register map or configuration guide is available at this time.
+
+4. Have you tested with any KT&C cameras? The ATC-HZ5540T-LP uses the same 30-pin micro coaxial connector and pinout as Sony FCB-EV cameras.
+
+Ans:- The V4L2 driver files shared with you is inline with the configuration/parameters (like pixel clock, FPS) with Sony FCB-EV-9520L/9500L. If different camera is used, these configurations to be verified and adjusted in the driver file, which we have to do it, for you. This aspect will be discussed with our commercial team as well
+
+## Issue 2: I2C-to-UART Bridge (VISCA) Not Functional
+
+Your product specification states that the board includes an **I2C-to-UART bridge for VISCA camera control**. We need VISCA communication to:
+- Change the camera's output format to 1080p60
+- Control zoom, focus, and other camera functions
+
+However, we cannot find the I2C-UART bridge on the I2C bus:
+
+- `i2cdetect -y -a 9` shows only the LT9211C at 0x10 — no UART bridge device
+- Scanned all I2C buses (1, 2, 5, 7, 9, 10, 11) at addresses 0x48–0x4F (common SC16IS7xx range) — no device found
+- No `sc16is7xx` kernel module is present in the custom image
+- No `/dev/ttySC*` serial device exists
+- No Device Tree entry for an I2C-UART bridge was found
+
+**Questions:**
+1. What is the I2C-to-UART bridge chip model on your board? (e.g., NXP SC16IS750?)
+
+Ans:- We use NXP SC16IS752IBS,151.
+
+2. What I2C bus and address should the bridge be on?
+
+Ans:- I2C bus 9 and address  0x48.
+
+3. Does the custom image (`ORIN_NX_IMAGE.tar.bz2`) include the driver and Device Tree configuration for the I2C-UART bridge? If not, how do we enable it?
+
+Ans:- The custom image does not include a kernel driver or Device Tree entry for the SC16IS752. Control is handled via direct register programming.
+.
+
+4. Can you provide a Device Tree overlay snippet and/or kernel module for the bridge?
+
+Ans:-  No Device Tree overlay or kernel module is provided. Please refer to the response above (register programming approach).
+
+5. Is there example code for sending VISCA commands through the bridge?
+
+Ans:-  Yes, please find the attached uart.py script. It demonstrates zoom-in and zoom-out using VISCA commands. Using this type of programming, you can change the format from 1080p30 to 1080p60.

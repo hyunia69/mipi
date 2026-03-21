@@ -1,0 +1,134 @@
+======================================
+   Carrier Board Compatibility Report 
+======================================
+Generated on: 2026. 02. 19. (
+) 21:01:14 KST
+---- System Information ----
+Linux ubuntu 5.15.148-tegra #1 SMP PREEMPT Mon Jun 16 08:24:48 PDT 2025 aarch64 aarch64 aarch64 GNU/Linux
+---- Jetson Model ----
+NVIDIA Jetson Orin Nano Engineering Reference Developer Kit Super
+---- L4T / JetPack Version ----
+# R36 (release), REVISION: 4.4, GCID: 41062509, BOARD: generic, EABI: aarch64, DATE: Mon Jun 16 16:07:13 UTC 2025
+# KERNEL_VARIANT: oot
+TARGET_USERSPACE_LIB_DIR=nvidia
+TARGET_USERSPACE_LIB_DIR_PATH=usr/lib/aarch64-linux-gnu/nvidia
+---- CPU / Memory ----
+Model name:                         Cortex-A78AE
+               total        used        free      shared  buff/cache   available
+Mem:           7.4Gi       1.9Gi       3.1Gi        29Mi       2.4Gi       5.2Gi
+Swap:          3.7Gi          0B       3.7Gi
+---- Network Interfaces (MAC) ----
+lo : 00:00:00:00:00:00
+wlP1p1s0 : 58:02:05:dd:e4:75
+can0 : 
+enP8p1s0 : 3c:6d:66:76:8c:cf
+l4tbr0 : 3e:c7:e7:79:f3:87
+usb0 : 62:b7:2f:5d:6d:25
+usb1 : 62:b7:2f:5d:6d:27
+docker0 : be:18:65:2f:48:7f
+---- EEPROM Dump (Carrier / Module if present) ----
+EEPROM: /sys/bus/i2c/devices/0-0050/eeprom
+00000000  02 00 fe 00 00 00 00 00  00 00 00 ff 00 00 00 00  |................|
+00000010  00 01 00 01 36 39 39 2d  31 33 37 36 37 2d 30 30  |....699-13767-00|
+00000020  30 35 2d 33 30 30 20 54  2e 31 00 00 00 00 00 00  |05-300 T.1......|
+00000030  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000040  b0 48 00 00 cf 8c 76 66  6d 3c 31 34 32 32 33 32  |.H....vfm<142232|
+00000050  35 30 34 32 34 35 36 00  00 00 00 00 00 00 00 00  |5042456.........|
+00000060  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000090  00 00 00 00 00 00 4e 56  43 42 00 ff 4d 31 00 00  |......NVCB..M1..|
+000000a0  00 00 00 00 00 00 00 00  00 00 00 00 cf 8c 76 66  |..............vf|
+000000b0  6d 3c 01 00 00 00 00 00  00 00 00 00 00 00 00 00  |m<..............|
+000000c0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+000000f0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 a9  |................|
+00000100
+EEPROM: /sys/bus/i2c/devices/0-0057/eeprom
+00000000  02 00 fe 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000010  00 00 00 0a 36 39 39 2d  31 33 37 36 38 2d 30 30  |....699-13768-00|
+00000020  30 30 2d 34 30 30 20 46  2e 31 00 00 00 00 00 00  |00-400 F.1......|
+00000030  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000040  00 00 00 00 71 8e 3c 2d  b0 48 31 34 32 32 33 32  |....q.<-.H142232|
+00000050  35 30 33 38 32 36 35 00  00 00 00 00 00 00 00 00  |5038265.........|
+00000060  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000090  00 00 00 00 00 00 4e 56  43 42 00 00 4d 31 00 00  |......NVCB..M1..|
+000000a0  00 00 00 00 00 00 00 00  00 00 00 00 71 8e 3c 2d  |............q.<-|
+000000b0  b0 48 0a 00 00 00 00 00  00 00 00 00 00 00 00 00  |.H..............|
+000000c0  00 00 00 00 00 00 00 00  36 37 35 2d 31 33 37 36  |........675-1376|
+000000d0  36 2d 30 30 30 30 2d 30  30 30 00 00 00 31 34 32  |6-0000-000...142|
+000000e0  32 33 32 35 36 30 30 33  38 32 00 00 00 00 00 00  |2325600382......|
+000000f0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 1b  |................|
+00000100
+---- Storage ----
+Filesystem       Size  Used Avail Use% Mounted on
+/dev/nvme0n1p1   456G   30G  403G   7% /
+tmpfs            3.8G   84K  3.8G   1% /dev/shm
+tmpfs            1.5G   27M  1.5G   2% /run
+tmpfs            5.0M  4.0K  5.0M   1% /run/lock
+/dev/nvme0n1p10   63M  110K   63M   1% /boot/efi
+tmpfs            762M   96K  762M   1% /run/user/128
+tmpfs            762M   80K  762M   1% /run/user/1000
+---- Kernel Modules Loaded ----
+Module                  Size  Used by
+xt_conntrack           16384  1
+xt_MASQUERADE          16384  1
+ip6table_nat           16384  1
+ip6table_filter        16384  1
+ip6_tables             32768  2 ip6table_filter,ip6table_nat
+xt_set                 20480  0
+ip_set                 53248  1 xt_set
+nvidia_drm             94208  1
+nvidia_modeset       1261568  5 nvidia_drm
+iptable_nat            16384  1
+nf_nat                 45056  3 ip6table_nat,iptable_nat,xt_MASQUERADE
+nf_conntrack          122880  3 xt_conntrack,nf_nat,xt_MASQUERADE
+nf_defrag_ipv6         24576  1 nf_conntrack
+nf_defrag_ipv4         16384  1 nf_conntrack
+libcrc32c              16384  2 nf_conntrack,nf_nat
+xt_addrtype            16384  4
+iptable_filter         16384  1
+nfnetlink              20480  2 ip_set
+lzo_rle                16384  36
+lzo_compress           16384  1 lzo_rle
+zram                   32768  12
+zsmalloc               32768  1 zram
+nvme_fabrics           24576  0
+ramoops                28672  0
+reed_solomon           20480  1 ramoops
+bridge                241664  0
+stp                    20480  1 bridge
+llc                    20480  2 bridge,stp
+usb_f_ncm              28672  2
+usb_f_mass_storage     45056  2
+algif_hash             24576  1
+algif_skcipher         20480  1
+af_alg                 28672  6 algif_hash,algif_skcipher
+bnep                   28672  2
+usb_f_acm              16384  2
+u_serial               20480  3 usb_f_acm
+usb_f_rndis            28672  2
+u_ether                28672  2 usb_f_rndis,usb_f_ncm
+libcomposite           61440  16 usb_f_rndis,usb_f_mass_storage,usb_f_acm,usb_f_ncm
+snd_soc_tegra186_asrc    36864  1
+snd_soc_tegra210_admaif   118784  1
+snd_soc_tegra_pcm      16384  1 snd_soc_tegra210_admaif
+snd_soc_tegra186_arad    24576  2 snd_soc_tegra186_asrc
+snd_soc_tegra210_ope    32768  1
+snd_soc_tegra186_dspk    20480  2
+snd_soc_tegra210_mixer    45056  1
+snd_soc_tegra210_dmic    20480  3
+snd_soc_tegra210_afc    20480  6
+snd_soc_tegra210_mvc    20480  2
+---- USB Devices ----
+Bus 002 Device 002: ID 0bda:0489 Realtek Semiconductor Corp. 4-Port USB 3.0 Hub
+Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+Bus 001 Device 003: ID 13d3:3549 IMC Networks Bluetooth Radio
+Bus 001 Device 005: ID 046d:c52b Logitech, Inc. Unifying Receiver
+Bus 001 Device 004: ID 3151:2020 YICHIP Wireless Device
+Bus 001 Device 002: ID 0bda:5489 Realtek Semiconductor Corp. 4-Port USB 2.0 Hub
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+---- PCI Devices ----
+0001:00:00.0 PCI bridge: NVIDIA Corporation Device 229e (rev a1)
+0001:01:00.0 Network controller: Realtek Semiconductor Co., Ltd. RTL8822CE 802.11ac PCIe Wireless Network Adapter
+0004:00:00.0 PCI bridge: NVIDIA Corporation Device 229c (rev a1)
+0004:01:00.0 Non-Volatile memory controller: Seagate Technology PLC Device 5018 (rev 01)
+0008:00:00.0 PCI bridge: NVIDIA Corporation Device 229c (rev a1)
+0008:01:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller (rev 15)

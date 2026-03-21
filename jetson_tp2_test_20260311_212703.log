@@ -1,0 +1,172 @@
+============================================
+ TP2 Capture Test - 2026. 03. 11. (수) 21:27:03 KST
+============================================
+
+[!] MobaXterm에서 TP2 시리얼 캡처가 실행 중인지 확인하세요
+
+>>> [Phase 1] 현재 상태 확인 - 21:27:03
+--- lsmod (lt9211cmipi) ---
+lt9211cmipi            16384  0
+tegra_camera          249856  4 nvhost_isp5,nvhost_nvcsi_t194,lt9211cmipi,nvhost_vi5
+--- video device ---
+crw-rw---- 1 root video 81, 0  3월 11 20:56 /dev/video0
+--- i2c devices (bus 9) ---
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+00:                         -- -- -- -- -- -- -- -- 
+10: UU -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+40: -- -- -- -- -- -- -- -- 48 -- -- -- -- -- -- -- 
+50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+70: -- -- -- -- -- -- -- --                         
+
+>>> [Phase 2] 드라이버 언로드 - 21:27:03
+rmmod: ERROR: ../libkmod/libkmod-module.c:799 kmod_module_remove_module() could not remove 'lt9211cmipi': Operation not permitted
+rmmod: ERROR: could not remove module lt9211cmipi: Operation not permitted
+    드라이버 언로드 완료, 3초 대기 후 재로드
+
+>>> [Phase 3] 드라이버 재로드 - 21:27:06
+    드라이버 로드 완료, 5초 대기
+--- dmesg (드라이버 로드 후) ---
+dmesg: read kernel buffer failed: Operation not permitted
+
+>>> [Phase 4] 클럭 초기화 - 21:27:11
+/home/hyunia/work/mipi/rc.local: line 4: /sys/kernel/debug/bpmp/debug/clk/vi/mrq_rate_locked: Permission denied
+/home/hyunia/work/mipi/rc.local: line 5: /sys/kernel/debug/bpmp/debug/clk/isp/mrq_rate_locked: Permission denied
+/home/hyunia/work/mipi/rc.local: line 6: /sys/kernel/debug/bpmp/debug/clk/nvcsi/mrq_rate_locked: Permission denied
+/home/hyunia/work/mipi/rc.local: line 7: /sys/kernel/debug/bpmp/debug/clk/emc/mrq_rate_locked: Permission denied
+tee: /sys/kernel/debug/bpmp/debug/clk/vi/ratecat: /sys/kernel/debug/bpmp/debug/clk/vi/max_rate: Permission denied
+: Permission denied
+tee: cat: /sys/kernel/debug/bpmp/debug/clk/isp/rate/sys/kernel/debug/bpmp/debug/clk/isp/max_rate: Permission denied
+: Permission denied
+tee: cat: /sys/kernel/debug/bpmp/debug/clk/nvcsi/rate/sys/kernel/debug/bpmp/debug/clk/nvcsi/max_rate: Permission denied
+: Permission denied
+cat: /sys/kernel/debug/bpmp/debug/clk/emc/max_rate: Permission denied
+tee: /sys/kernel/debug/bpmp/debug/clk/emc/rate: Permission denied
+/home/hyunia/work/mipi/rc.local: line 16: /sys/kernel/debug/tracing/tracing_on: Permission denied
+/home/hyunia/work/mipi/rc.local: line 17: /sys/kernel/debug/tracing/buffer_size_kb: Permission denied
+/home/hyunia/work/mipi/rc.local: line 18: /sys/kernel/debug/tracing/events/tegra_rtcpu/enable: Permission denied
+/home/hyunia/work/mipi/rc.local: line 19: /sys/kernel/debug/tracing/events/freertos/enable: Permission denied
+/home/hyunia/work/mipi/rc.local: line 20: /sys/kernel/debug/camrtc/log-level: Permission denied
+/home/hyunia/work/mipi/rc.local: line 21: /sys/kernel/debug/tracing/events/camera_common/enable: Permission denied
+/home/hyunia/work/mipi/rc.local: line 22: /sys/kernel/debug/tracing/trace: Permission denied
+
+>>> [Phase 5] V4L2 디바이스 확인 - 21:27:13
+Driver Info:
+	Driver name      : tegra-video
+	Card type        : vi-output, lt9211cmipi 9-0010
+	Bus info         : platform:tegra-capture-vi:2
+	Driver version   : 5.15.148
+	Capabilities     : 0x84200001
+		Video Capture
+		Streaming
+		Extended Pix Format
+		Device Capabilities
+	Device Caps      : 0x04200001
+		Video Capture
+		Streaming
+		Extended Pix Format
+Media Driver Info:
+	Driver name      : tegra-camrtc-ca
+	Model            : NVIDIA Tegra Video Input Device
+	Serial           : 
+	Bus info         : 
+	Media version    : 5.15.148
+	Hardware revision: 0x00000003 (3)
+	Driver version   : 5.15.148
+Interface Info:
+	ID               : 0x03000008
+	Type             : V4L Video
+Entity Info:
+	ID               : 0x00000006 (6)
+	Name             : vi-output, lt9211cmipi 9-0010
+	Function         : V4L2 I/O
+	Pad 0x01000007   : 0: Sink
+	  Link 0x0200000c: from remote pad 0x1000003 of entity '13e00000.host1x:nvcsi@15a00000-' (Unknown sub-device (0002000a)): Data, Enabled
+Priority: 2
+Video input : 0 (Camera 2: no power)
+Format Video Capture:
+	Width/Height      : 1920/1080
+	Pixel Format      : 'UYVY' (UYVY 4:2:2)
+	Field             : None
+	Bytes per Line    : 3840
+	Size Image        : 4147200
+	Colorspace        : sRGB
+	Transfer Function : Default (maps to sRGB)
+	YCbCr/HSV Encoding: Default (maps to ITU-R 601)
+	Quantization      : Default (maps to Limited Range)
+	Flags             : 
+Streaming Parameters Video Capture:
+	Capabilities     : timeperframe
+	Frames per second: 60.000 (60/1)
+	Read buffers     : 0
+
+Camera Controls
+
+           sensor_configuration 0x009a2032 (u32)    : min=0 max=4294967295 step=1 default=0 dims=[22] flags=read-only, volatile, has-payload
+         sensor_mode_i2c_packet 0x009a2033 (u32)    : min=0 max=4294967295 step=1 default=0 dims=[1026] flags=read-only, volatile, has-payload
+      sensor_control_i2c_packet 0x009a2034 (u32)    : min=0 max=4294967295 step=1 default=0 dims=[1026] flags=read-only, volatile, has-payload
+                    bypass_mode 0x009a2064 (intmenu): min=0 max=1 default=0 value=0 (0 0x0)
+				0: 0 (0x0)
+				1: 1 (0x1)
+                override_enable 0x009a2065 (intmenu): min=0 max=1 default=0 value=0 (0 0x0)
+				0: 0 (0x0)
+				1: 1 (0x1)
+                   height_align 0x009a2066 (int)    : min=1 max=16 step=1 default=1 value=1
+                     size_align 0x009a2067 (intmenu): min=0 max=2 default=0 value=0 (1 0x1)
+				0: 1 (0x1)
+				1: 65536 (0x10000)
+				2: 131072 (0x20000)
+               write_isp_format 0x009a2068 (int)    : min=1 max=1 step=1 default=1 value=1
+       sensor_signal_properties 0x009a2069 (u32)    : min=0 max=4294967295 step=1 default=0 dims=[30][18] flags=read-only, has-payload
+        sensor_image_properties 0x009a206a (u32)    : min=0 max=4294967295 step=1 default=0 dims=[30][16] flags=read-only, has-payload
+      sensor_control_properties 0x009a206b (u32)    : min=0 max=4294967295 step=1 default=0 dims=[30][36] flags=read-only, has-payload
+              sensor_dv_timings 0x009a206c (u32)    : min=0 max=4294967295 step=1 default=0 dims=[30][16] flags=read-only, has-payload
+               low_latency_mode 0x009a206d (bool)   : default=0 value=0
+               preferred_stride 0x009a206e (int)    : min=0 max=65535 step=1 default=0 value=0
+    override_capture_timeout_ms 0x009a206f (int)    : min=-1 max=2147483647 step=1 default=2500 value=2500
+                   sensor_modes 0x009a2082 (int)    : min=0 max=30 step=1 default=30 value=1 flags=read-only
+
+>>> [Phase 6] GStreamer 캡처 시도 (10초) - 21:27:13
+Setting pipeline to PAUSED ...
+Pipeline is live and does not need PREROLL ...
+Pipeline is PREROLLED ...
+Setting pipeline to PLAYING ...
+WARNING: from element /GstPipeline:pipeline0/GstV4l2Src:v4l2src0: Signal lost
+Additional debug info:
+../sys/v4l2/gstv4l2src.c(556): gst_v4l2src_query_preferred_size (): /GstPipeline:pipeline0/GstV4l2Src:v4l2src0:
+No input source was detected - video frames invalid
+New clock: GstSystemClock
+Redistribute latency...
+
+>>> [Phase 7] 캡처 후 dmesg - 21:27:23
+dmesg: read kernel buffer failed: Operation not permitted
+
+>>> [Phase 8] 이미지 캡처 시도 - 21:27:23
+Setting pipeline to PAUSED ...
+ERROR: from element /GstPipeline:pipeline0/GstFileSink:filesink0: Could not open file "/home/hyunia/work/mipi/tp2_test_capture.jpg" for writing.
+Additional debug info:
+../plugins/elements/gstfilesink.c(458): gst_file_sink_open_file (): /GstPipeline:pipeline0/GstFileSink:filesink0:
+system error: Permission denied
+ERROR: pipeline doesn't want to preroll.
+ERROR: from element /GstPipeline:pipeline0/GstFileSink:filesink0: GStreamer error: state change failed and some element failed to post a proper error message with the reason for the failure.
+Additional debug info:
+../libs/gst/base/gstbasesink.c(5878): gst_base_sink_change_state (): /GstPipeline:pipeline0/GstFileSink:filesink0:
+Failed to start
+ERROR: pipeline doesn't want to preroll.
+Failed to set pipeline to PAUSED.
+Setting pipeline to NULL ...
+Freeing pipeline ...
+
+============================================
+ 테스트 완료 - 2026. 03. 11. (수) 21:27:23 KST
+============================================
+
+Jetson 로그: /home/hyunia/work/mipi/jetson_tp2_test_20260311_212703.log
+TP2 UART 로그: MobaXterm에서 저장
+
+Oppila에 전달할 파일:
+  1. TP2 UART 로그 (MobaXterm 저장분) - 보드 전원 ON 시
+  2. TP2 UART 로그 (MobaXterm 저장분) - 이 스크립트 실행 시
+  3. /home/hyunia/work/mipi/jetson_tp2_test_20260311_212703.log

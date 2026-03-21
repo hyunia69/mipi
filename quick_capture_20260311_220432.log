@@ -1,0 +1,72 @@
+============================================
+ Quick Capture Test - 2026. 03. 11. (수) 22:04:32 KST
+============================================
+
+>>> [Phase 1] 클럭 초기화 - 22:04:32
+550400000
+729600000
+214300000
+3199000000
+/home/hyunia/work/mipi/rc.local: line 20: /sys/kernel/debug/camrtc/log-level: No such file or directory
+
+>>> [Phase 2] 현재 상태 확인 - 22:04:33
+--- video device ---
+crw-rw---- 1 root video 81, 0  3월 11 21:46 /dev/video0
+--- v4l2 format ---
+Format Video Capture:
+	Width/Height      : 1920/1080
+	Pixel Format      : 'UYVY' (UYVY 4:2:2)
+	Field             : None
+	Bytes per Line    : 3840
+	Size Image        : 4147200
+	Colorspace        : sRGB
+	Transfer Function : Default (maps to sRGB)
+	YCbCr/HSV Encoding: Default (maps to ITU-R 601)
+	Quantization      : Default (maps to Limited Range)
+	Flags             : 
+
+>>> [Phase 3] 화면 영상 표시 (5초) - 22:04:33
+    nveglglessink 시도...
+WARNING: erroneous pipeline: no element "nveglglessink"
+    nveglglessink 실패, 다음 시도...
+    xvimagesink 시도...
+Setting pipeline to PAUSED ...
+ERROR: from element /GstPipeline:pipeline0/GstXvImageSink:xvimagesink0: Could not initialise Xv output
+Additional debug info:
+../sys/xvimage/xvimagesink.c(1806): gst_xv_image_sink_open (): /GstPipeline:pipeline0/GstXvImageSink:xvimagesink0:
+Could not open display (null)
+ERROR: pipeline doesn't want to preroll.
+Failed to set pipeline to PAUSED.
+Setting pipeline to NULL ...
+Freeing pipeline ...
+    xvimagesink 실패, 다음 시도...
+    autovideosink 시도...
+Setting pipeline to PAUSED ...
+error: XDG_RUNTIME_DIR is invalid or not set in the environment.
+Pipeline is live and does not need PREROLL ...
+Got context from element 'autovideosink0': gst.gl.GLDisplay=context, gst.gl.GLDisplay=(GstGLDisplay)"\(GstGLDisplayGBM\)\ gldisplaygbm0";
+Pipeline is PREROLLED ...
+Setting pipeline to PLAYING ...
+New clock: GstSystemClock
+Caught SIGSEGV
+Spinning.  Please run 'gdb gst-launch-1.0 16340' to continue debugging, Ctrl-C to quit, or Ctrl-\ to dump core.
+
+>>> [Phase 4] 이미지 캡처 - 22:04:38
+Setting pipeline to PAUSED ...
+Pipeline is live and does not need PREROLL ...
+Pipeline is PREROLLED ...
+Setting pipeline to PLAYING ...
+New clock: GstSystemClock
+Redistribute latency...
+Got EOS from element "pipeline0".
+Execution ended after 0:00:00.128338758
+Setting pipeline to NULL ...
+Freeing pipeline ...
+    캡처 파일: /home/hyunia/work/mipi/quick_capture_20260311_220438.jpg
+
+>>> [Phase 5] dmesg - 22:04:38
+
+============================================
+ 테스트 완료 - 2026. 03. 11. (수) 22:04:38 KST
+============================================
+로그: /home/hyunia/work/mipi/quick_capture_20260311_220432.log

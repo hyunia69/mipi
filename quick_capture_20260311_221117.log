@@ -1,0 +1,282 @@
+============================================
+ Quick Capture Test - 2026. 03. 11. (수) 22:11:17 KST
+============================================
+
+>>> [Phase 1] 클럭 초기화 - 22:11:17
+550400000
+729600000
+214300000
+3199000000
+/home/hyunia/work/mipi/rc.local: line 20: /sys/kernel/debug/camrtc/log-level: No such file or directory
+
+>>> [Phase 2] 현재 상태 확인 - 22:11:18
+--- video device ---
+crw-rw---- 1 root video 81, 0  3월 11 21:46 /dev/video0
+--- v4l2 format ---
+Format Video Capture:
+	Width/Height      : 1920/1080
+	Pixel Format      : 'UYVY' (UYVY 4:2:2)
+	Field             : None
+	Bytes per Line    : 3840
+	Size Image        : 4147200
+	Colorspace        : sRGB
+	Transfer Function : Default (maps to sRGB)
+	YCbCr/HSV Encoding: Default (maps to ITU-R 601)
+	Quantization      : Default (maps to Limited Range)
+	Flags             : 
+
+>>> [Phase 3] 화면 영상 표시 (5초) - 22:11:18
+    nveglglessink 시도...
+WARNING: erroneous pipeline: no element "nveglglessink"
+    nveglglessink 실패, 다음 시도...
+    xvimagesink 시도...
+Setting pipeline to PAUSED ...
+Pipeline is live and does not need PREROLL ...
+Pipeline is PREROLLED ...
+Setting pipeline to PLAYING ...
+New clock: GstSystemClock
+Redistribute latency...
+
+>>> [Phase 4] 이미지 캡처 - 22:11:23
+Setting pipeline to PAUSED ...
+Pipeline is live and does not need PREROLL ...
+Pipeline is PREROLLED ...
+Setting pipeline to PLAYING ...
+New clock: GstSystemClock
+Redistribute latency...
+Got EOS from element "pipeline0".
+Execution ended after 0:00:00.123087271
+Setting pipeline to NULL ...
+Freeing pipeline ...
+    캡처 파일: /home/hyunia/work/mipi/quick_capture_20260311_221123.jpg
+
+>>> [Phase 5] dmesg - 22:11:23
+[ 2939.761353] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2939.778200] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2939.794689] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2939.811360] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2939.828006] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2939.861337] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2939.894680] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2939.911340] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2939.944677] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2939.961340] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2939.977999] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.011345] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.028014] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.044668] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.078022] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.094668] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.128015] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.144675] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.161336] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.194673] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.211330] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.227992] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.261326] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.278002] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.294657] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.327988] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.344652] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.377989] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.394652] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.411314] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.444663] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.461316] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.477988] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.511328] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.527983] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.544647] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.578045] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.594656] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.611311] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.644649] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.661338] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.677983] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.711318] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.727974] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.744641] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.778162] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.794653] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.811318] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.844841] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.861325] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.878162] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.911442] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.928096] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.961314] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.978084] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2940.994772] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.027979] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.044762] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.061309] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.094659] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.111324] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.127980] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.161322] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.177978] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.194636] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.227976] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.244634] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.277996] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.294645] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.311306] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.344643] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.361414] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.378093] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.411429] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.428077] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.444760] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.478100] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.494635] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.511301] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.544645] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.561305] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.577968] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.611305] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.627967] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.644632] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.678099] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.694764] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.711421] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.744742] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.761420] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.778087] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.811509] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.828166] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.844832] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.878141] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.894750] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.911421] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.944750] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.961417] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2941.978089] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.011416] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.028092] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.044823] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.078092] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.094632] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.111293] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.144642] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.161314] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.177964] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.211310] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.227959] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.244626] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.278122] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.294828] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.311489] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.344822] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.361419] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.378077] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.411410] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.428081] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.444744] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.478085] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.494746] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.511410] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.544743] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.561410] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.578072] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.611441] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.628077] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.644746] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.678084] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.694746] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.711409] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.744741] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.761291] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.777949] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.811489] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.828081] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.844746] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.878083] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.894742] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.911407] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.944739] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.961405] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2942.978074] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.011411] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.028075] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.044618] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.077973] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.094622] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.111282] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.144616] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.161301] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.177950] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.211298] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.227952] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.244617] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.278082] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.294626] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.311284] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.344613] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.361278] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.377941] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.411279] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.427944] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.444608] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.478070] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.494735] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.511398] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.544752] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.561285] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.577943] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.611282] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.627956] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.644610] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.677943] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.694610] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.711272] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.744625] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.761275] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.777939] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.811297] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.827944] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.844610] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.877943] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.894606] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.911270] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.944628] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.961279] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2943.977939] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.011274] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.027936] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.044605] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.077955] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.094610] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.111271] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.144610] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.161286] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.178150] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.211288] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.227937] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.244604] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.277941] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.294613] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.311274] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.344814] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.361283] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.377933] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.411478] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.427938] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.444610] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.477938] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.494601] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.511267] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.544602] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.561269] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.577938] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.611271] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.627932] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.644599] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.677952] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.777963] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.794629] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+[ 2944.877968] tegra-camrtc-capture-vi tegra-capture-vi: corr_err: discarding frame 0, flags: 0, err_data 131072
+
+============================================
+ 테스트 완료 - 2026. 03. 11. (수) 22:11:23 KST
+============================================
+로그: /home/hyunia/work/mipi/quick_capture_20260311_221117.log
