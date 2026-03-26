@@ -1,18 +1,53 @@
 # LVDS-MIPI Bridge Board 작업 기록
 
-- 작업일: 2026-02-26 (최종 업데이트: 2026-03-18)
-- 대상 보드: NVIDIA Jetson Orin Nano Super Developer Kit (192.168.219.125, user: hyunia)
+- 작업일: 2026-02-26 (최종 업데이트: 2026-03-26)
+- 대상 보드: NVIDIA Jetson Orin Nano Super Developer Kit (user: hyunia)
 - 어댑터: Oppila LVDS-MIPI Bridge Board (LT9211C)
 - 카메라: **KT&C ATC-HZ5540T-LP** (1/2.9" 1.58MP Global Shutter CMOS, 40x Zoom)
 - L4T: R36.4.4, Kernel: 5.15.148-tegra
-- 플래싱 PC: Ubuntu 22.04.5 LTS, SDK Manager 2.3.0.12617 (Electron 13.6.9, Chrome 91.0.4472.164, Node.js 14.16.0, x86_64)
-- **현재 상태**: 카메라 영상 정상 출력 성공 (2026-03-18)
+- 플래싱 PC: Ubuntu 22.04.5 LTS, SDK Manager 2.3.0.12617
+- **현재 상태**: 새 이미지 재플래싱 완료, 초기 설정 진행 중 (2026-03-26)
 
 ---
 
-## 0. 최신 현황 (2026-03-18) — 영상 출력 성공
+## 0. 최신 현황 (2026-03-26) — 새 이미지 재플래싱
 
-### 해결 완료
+### 재플래싱 작업 (2026-03-26)
+
+**새 ORIN_NX_IMAGE.tar.bz2 이미지로 Jetson 재플래싱 수행.**
+
+#### 플래싱 절차 (PDF 기준 문서: IMAGE_BRINGUP_DOCUMENT.pdf)
+1. 호스트 PC (Ubuntu 22.04.5 LTS)에서 새 이미지 압축 해제 + apply_binaries.sh
+2. Jetson Recovery Mode (FC REC ↔ GND 점퍼) → USB-C 연결
+3. `sudo ./nvsdkmanager_flash.sh --storage nvme0n1p1` 실행
+4. 플래싱 완료 후 점퍼 제거 → 카메라/Bridge Board 연결 → 전원 ON
+
+#### 플래싱 후 해결한 이슈들
+
+| 이슈 | 증상 | 해결 방법 |
+|------|------|----------|
+| OEM 초기 설정 GUI 깨짐 | 검은 화면 + 마우스 포인터만 표시, 10분 이상 hang | 재부팅으로 해결 |
+| SSH 서버 미설치 | openssh-server 미포함 | `sudo apt install -y openssh-server` |
+| SSH 호스트 키 미생성 | `sshd` 시작 실패 ("no hostkeys available") | `sudo ssh-keygen -A` → `sudo systemctl start ssh` |
+| OEM 설정 매 부팅 반복 | 부팅마다 oem-config 재실행 | 아래 명령으로 비활성화: |
+
+```bash
+# OEM 설정 반복 방지 (재플래싱 후 필수)
+sudo systemctl disable nv-oem-config.service nv-oem-config-gui.service nv-oem-config.target
+sudo touch /etc/nv-oem-config-done
+```
+
+**참고**: `nv-oem-config.service`가 "does not exist" 에러 나올 수 있음 → 무시하고 나머지 실행.
+실제로 활성화되어 있던 서비스: `nv-oem-config-gui.service`, `nv-oem-config.service` (systemctl list-units로 확인)
+
+#### 재플래싱 후 남은 작업 (PDF Section 5~6 기준)
+1. ☐ rc.local 복사 (PC → Jetson)
+2. ☐ jetson-io.py 핀 설정 (Camera IMX219-C 선택 → 리부트)
+3. ☐ rc.local 실행 + 비디오 노드 확인
+4. ☐ Python 패키지 재설치 (smbus2 등, VISCA 사용 시)
+5. ☐ 스크립트 재업로드 (view_camera.py 등)
+
+### 이전 영상 출력 성공 기록 (2026-03-18)
 
 **카메라 영상이 정상적으로 출력됨을 확인.**
 - 1920x1080 @ 60fps, UYVY, 전체 화면 선명한 영상 출력
