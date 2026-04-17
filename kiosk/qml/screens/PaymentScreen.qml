@@ -14,10 +14,12 @@ Item {
     Rectangle {
         x: -120; y: -120; width: 400; height: 400; radius: 200
         color: Qt.rgba(59, 130, 246, 0.04)
+        visible: !Theme.isMinimal
     }
     Rectangle {
         x: parent.width - 200; y: parent.height - 280; width: 500; height: 500; radius: 250
         color: Qt.rgba(139, 92, 246, 0.04)
+        visible: !Theme.isMinimal
     }
 
     // Center glass panel

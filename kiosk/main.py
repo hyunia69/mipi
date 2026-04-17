@@ -1,4 +1,5 @@
 import sys
+import argparse
 from pathlib import Path
 
 from PySide6.QtCore import QUrl
@@ -35,6 +36,10 @@ def resolve_primary_font(loaded_families: list[str]) -> str:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description="Digital Telescope Kiosk")
+    parser.add_argument("--theme", choices=["holo", "minimal", "future"], default="holo", help="UI Theme Style")
+    args, _ = parser.parse_known_args()
+
     app = QGuiApplication(sys.argv)
     app.setApplicationName("Digital Telescope Kiosk")
     app.setOrganizationName("Dasam")
@@ -45,12 +50,14 @@ def main() -> int:
     loaded = load_application_fonts(assets_dir / "fonts")
     primary_font = resolve_primary_font(loaded)
     print(f"[fonts] Loaded: {loaded or '(none)'}  |  Primary: {primary_font}")
+    print(f"[theme] Active Style: {args.theme}")
 
     engine = QQmlApplicationEngine()
 
     ctx = engine.rootContext()
     ctx.setContextProperty("ASSETS_URL", QUrl.fromLocalFile(str(assets_dir)).toString())
     ctx.setContextProperty("PRIMARY_FONT", primary_font)
+    ctx.setContextProperty("appTheme", args.theme)
 
     qml_dir = base_dir / "qml"
     engine.addImportPath(str(qml_dir))

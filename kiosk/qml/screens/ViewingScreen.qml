@@ -175,6 +175,7 @@ Item {
         anchors.centerIn: parent
         width: 80; height: 80
         z: 30
+        visible: !Theme.isMinimal
 
         Item {
             id: crosshairVisuals

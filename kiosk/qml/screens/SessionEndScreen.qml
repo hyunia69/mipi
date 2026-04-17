@@ -12,6 +12,7 @@ Item {
         anchors.centerIn: parent
         width: 720; height: 720; radius: 360
         color: "transparent"
+        visible: !Theme.isMinimal
         gradient: Gradient {
             GradientStop { position: 0.0; color: Qt.rgba(0.13, 0.83, 0.93, 0.07) }
             GradientStop { position: 1.0; color: "transparent" }
@@ -28,6 +29,7 @@ Item {
             id: telescopeIconHost
             width: 140; height: 140
             anchors.horizontalCenter: parent.horizontalCenter
+            visible: !Theme.isMinimal
 
             Item {
                 id: telescopeIcon

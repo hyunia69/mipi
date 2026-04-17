@@ -6,36 +6,64 @@ Item {
 
     property int count: 50
     property real topFraction: 0.55
-    property color starColor: Theme.holoTeal
+    property color starColor: Theme.isFuture ? Theme.futureCyan : Theme.holoTeal
 
+    // Stars
     Repeater {
         model: root.count
         Rectangle {
             readonly property real seed: Math.random()
-            readonly property real size: 1 + Math.random() * 2.5
+            readonly property real size: (Theme.isFuture ? 1.5 : 1) + Math.random() * 2.5
             x: Math.random() * root.width
             y: Math.random() * (root.height * root.topFraction)
             width: size
             height: size
             radius: size / 2
-            color: Qt.rgba(
-                root.starColor.r,
-                root.starColor.g,
-                root.starColor.b,
-                0.35 + Math.random() * 0.45
-            )
+            color: Theme.isFuture ? (seed > 0.5 ? Theme.futureCyan : Theme.futureMagenta) : root.starColor
+            opacity: 0.35 + Math.random() * 0.45
 
             SequentialAnimation on opacity {
                 running: Theme.enableParticles
                 loops: Animation.Infinite
                 PauseAnimation { duration: Math.floor(Math.random() * 3500) }
-                NumberAnimation { from: 1.0; to: 0.15; duration: 1400 + Math.floor(Math.random() * 1800); easing.type: Easing.InOutSine }
-                NumberAnimation { from: 0.15; to: 1.0; duration: 1400 + Math.floor(Math.random() * 1800); easing.type: Easing.InOutSine }
+                NumberAnimation { to: 0.15; duration: 1400 + Math.floor(Math.random() * 1800); easing.type: Easing.InOutSine }
+                NumberAnimation { to: 0.9; duration: 1400 + Math.floor(Math.random() * 1800); easing.type: Easing.InOutSine }
+            }
+
+            // Future theme slow drift
+            NumberAnimation on x {
+                running: Theme.isFuture && Theme.enableParticles
+                from: x; to: x + 100; duration: 30000; loops: Animation.Infinite
             }
         }
     }
 
-    // Faint shooting-star streak across the upper band
+    // Future Theme Data Streams
+    Repeater {
+        model: Theme.isFuture ? 8 : 0
+        Rectangle {
+            x: Math.random() * root.width
+            y: 0
+            width: 1
+            height: root.height * 0.6
+            opacity: 0.1
+            color: index % 2 === 0 ? Theme.futureCyan : Theme.futureMagenta
+            
+            Rectangle {
+                width: 2
+                height: 40
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: parent.color
+                opacity: 0.8
+                SequentialAnimation on y {
+                    loops: Animation.Infinite
+                    NumberAnimation { from: -40; to: root.height * 0.6; duration: 2000 + Math.random() * 3000 }
+                }
+            }
+        }
+    }
+
+    // Faint shooting-star streak
     Rectangle {
         id: streak
         width: 120

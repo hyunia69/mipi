@@ -10,13 +10,50 @@ Item {
 
     ImageSlideshow {
         anchors.fill: parent
-        interval: 6000
+        interval: 8000
+        opacity: Theme.isFuture ? 0.7 : 1.0
+    }
+
+    // Spatial Grid for Future Theme
+    Item {
+        anchors.fill: parent
+        visible: Theme.isFuture
+        z: 1
+        opacity: 0.2
+
+        transform: Rotation {
+            axis.x: 1; axis.y: 0; axis.z: 0
+            angle: 45
+            origin.x: root.width / 2
+            origin.y: root.height
+        }
+
+        Canvas {
+            anchors.fill: parent
+            onPaint: {
+                var ctx = getContext("2d");
+                ctx.strokeStyle = Theme.futureCyan;
+                ctx.lineWidth = 1;
+                for(var i=-width; i<width*2; i+=60) {
+                    ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, height); ctx.stroke();
+                }
+                for(var j=0; j<height; j+=60) {
+                    ctx.beginPath(); ctx.moveTo(-width, j); ctx.lineTo(width*2, j); ctx.stroke();
+                }
+            }
+        }
+        
+        SequentialAnimation on y {
+            loops: Animation.Infinite
+            NumberAnimation { from: 0; to: 60; duration: 2000; easing.type: Easing.Linear }
+        }
     }
 
     StarsBackdrop {
         anchors.fill: parent
         z: 1
-        count: 55
+        count: Theme.isMinimal ? 0 : (Theme.isFuture ? 80 : 55)
+        visible: Theme.enableParticles
         topFraction: 0.55
     }
 
@@ -25,8 +62,8 @@ Item {
         z: 2
         gradient: Gradient {
             GradientStop { position: 0.0; color: "transparent" }
-            GradientStop { position: 0.35; color: "transparent" }
-            GradientStop { position: 0.65; color: Qt.rgba(13/255, 17/255, 23/255, 0.6) }
+            GradientStop { position: 0.40; color: "transparent" }
+            GradientStop { position: 0.70; color: Theme.isMinimal ? Qt.rgba(0, 0, 0, 0.5) : (Theme.isFuture ? Qt.rgba(5, 5, 16, 0.7) : Qt.rgba(13/255, 17/255, 23/255, 0.6)) }
             GradientStop { position: 1.0; color: Theme.backgroundColor }
         }
     }
@@ -53,11 +90,11 @@ Item {
 
             Text {
                 text: "DIGITAL TELESCOPE"
-                color: Theme.holoTeal
+                color: Theme.isMinimal ? Theme.textSecondary : (Theme.isFuture ? Theme.futureCyan : Theme.holoTeal)
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.fontCaption
-                font.weight: Font.Medium
-                font.letterSpacing: 6
+                font.weight: Theme.isMinimal ? Font.Normal : Font.Medium
+                font.letterSpacing: Theme.isMinimal ? 4 : (Theme.isFuture ? 10 : 6)
                 opacity: 0.85
             }
 
@@ -67,16 +104,24 @@ Item {
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.fontHero
                 font.weight: Font.Bold
+                
+                // Future theme neon glow effect via scale/opacity pulse
+                SequentialAnimation on opacity {
+                    running: Theme.isFuture
+                    loops: Animation.Infinite
+                    NumberAnimation { to: 0.8; duration: 2000; easing.type: Easing.InOutSine }
+                    NumberAnimation { to: 1.0; duration: 2000; easing.type: Easing.InOutSine }
+                }
             }
         }
 
         ListView {
             id: cardList
             width: parent.width
-            height: 200
+            height: Theme.isFuture ? 260 : 220
             orientation: ListView.Horizontal
-            spacing: Theme.spacingSM
-            clip: true
+            spacing: Theme.spacingMD
+            clip: false
             boundsBehavior: Flickable.StopAtBounds
             interactive: true
 
@@ -101,14 +146,19 @@ Item {
                     : ""
 
                 opacity: 0
-                transform: Translate { id: cardShift; x: -36 }
+                transform: [
+                    Translate { id: cardShift; x: -36 },
+                    Scale { id: cardScale; xScale: 0.9; yScale: 0.9; origin.x: 120; origin.y: 100 }
+                ]
 
                 SequentialAnimation {
                     running: true
                     PauseAnimation { duration: 250 + index * 90 }
                     ParallelAnimation {
-                        NumberAnimation { target: card;      property: "opacity"; from: 0; to: 1;  duration: 500; easing.type: Easing.OutCubic }
-                        NumberAnimation { target: cardShift; property: "x";       to: 0;            duration: 500; easing.type: Easing.OutCubic }
+                        NumberAnimation { target: card;      property: "opacity"; to: 1;  duration: 600; easing.type: Easing.OutCubic }
+                        NumberAnimation { target: cardShift; property: "x";       to: 0;  duration: 600; easing.type: Easing.OutCubic }
+                        NumberAnimation { target: cardScale; property: "xScale";  to: 1;  duration: 600; easing.type: Easing.OutBack }
+                        NumberAnimation { target: cardScale; property: "yScale";  to: 1;  duration: 600; easing.type: Easing.OutBack }
                     }
                 }
 
@@ -127,7 +177,7 @@ Item {
 
         AnnouncementBanner {
             width: parent.width
-            message: "Operating Hours 09:00 - 18:00   |   Service may be suspended during rain   |   Contact: 02-1234-5678   |   Please do not lean on the railings"
+            message: "Operating Hours 09:00 - 18:00   |   Service may be suspended during rain   |   Contact: 02-1234-5678"
         }
     }
 
@@ -136,7 +186,7 @@ Item {
     NumberAnimation {
         id: fadeIn
         target: root; property: "opacity"
-        from: 0; to: 1; duration: 600
+        from: 0; to: 1; duration: 800
         easing.type: Easing.OutCubic
     }
 }

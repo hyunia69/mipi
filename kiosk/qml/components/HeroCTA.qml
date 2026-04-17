@@ -124,6 +124,7 @@ Item {
     MultiEffect {
         source: body
         anchors.fill: body
+        anchors.margins: -32 // Prevents shadow clipping
         enabled: Theme.enableEffects && mouseArea.containsMouse
         visible: enabled
         shadowEnabled: true

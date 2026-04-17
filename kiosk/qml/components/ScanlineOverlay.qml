@@ -3,7 +3,8 @@ import ".."
 
 Canvas {
     id: root
-    opacity: 0.05
+    opacity: Theme.showScanlines ? 0.05 : 0.0
+    visible: opacity > 0
     z: 50
 
     property int spacing: 3
