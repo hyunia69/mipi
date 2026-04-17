@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 import ".."
 
 Item {
@@ -7,13 +8,12 @@ Item {
 
     Rectangle { anchors.fill: parent; color: Theme.backgroundColor }
 
-    // Decorative radial gradient
     Rectangle {
         anchors.centerIn: parent
-        width: 600; height: 600; radius: 300
+        width: 720; height: 720; radius: 360
         color: "transparent"
         gradient: Gradient {
-            GradientStop { position: 0.0; color: Qt.rgba(59, 130, 246, 0.06) }
+            GradientStop { position: 0.0; color: Qt.rgba(0.13, 0.83, 0.93, 0.07) }
             GradientStop { position: 1.0; color: "transparent" }
         }
     }
@@ -24,44 +24,67 @@ Item {
         spacing: Theme.spacingMD
         opacity: 0
 
-        // Telescope icon (abstract geometric)
         Item {
-            width: 120; height: 120
+            id: telescopeIconHost
+            width: 140; height: 140
             anchors.horizontalCenter: parent.horizontalCenter
 
-            // Lens circles
-            Rectangle {
-                anchors.centerIn: parent
-                width: 80; height: 80; radius: 40
-                color: "transparent"
-                border.color: Theme.primaryColor
-                border.width: 2
-                opacity: 0.6
-            }
-            Rectangle {
-                anchors.centerIn: parent
-                width: 50; height: 50; radius: 25
-                color: "transparent"
-                border.color: Theme.primaryColor
-                border.width: 1.5
-                opacity: 0.4
-            }
-            Rectangle {
-                anchors.centerIn: parent
-                width: 20; height: 20; radius: 10
-                color: Theme.primaryColor
-                opacity: 0.3
+            Item {
+                id: telescopeIcon
+                anchors.fill: parent
+                layer.enabled: Theme.enableEffects
+
+                Rectangle {
+                    anchors.centerIn: parent
+                    width: 92; height: 92; radius: 46
+                    color: "transparent"
+                    border.color: Theme.holoTeal
+                    border.width: 2
+                    opacity: 0.7
+                }
+                Rectangle {
+                    anchors.centerIn: parent
+                    width: 58; height: 58; radius: 29
+                    color: "transparent"
+                    border.color: Theme.holoTeal
+                    border.width: 1.5
+                    opacity: 0.5
+                }
+                Rectangle {
+                    anchors.centerIn: parent
+                    width: 22; height: 22; radius: 11
+                    color: Theme.holoTeal
+                    opacity: 0.35
+                }
+
+                Rectangle { anchors.centerIn: parent; width: 1;  height: 108; color: Qt.rgba(0.13, 0.83, 0.93, 0.35) }
+                Rectangle { anchors.centerIn: parent; width: 108; height: 1;  color: Qt.rgba(0.13, 0.83, 0.93, 0.35) }
+
+                RotationAnimation on rotation {
+                    running: Theme.enableEffects
+                    from: 0; to: 360
+                    duration: 20000
+                    loops: Animation.Infinite
+                }
             }
 
-            // Crosshair
-            Rectangle { anchors.centerIn: parent; width: 1; height: 90; color: Qt.rgba(59, 130, 246, 0.2) }
-            Rectangle { anchors.centerIn: parent; width: 90; height: 1; color: Qt.rgba(59, 130, 246, 0.2) }
+            MultiEffect {
+                source: telescopeIcon
+                anchors.fill: telescopeIcon
+                enabled: Theme.enableEffects
+                visible: enabled
+                shadowEnabled: true
+                shadowBlur: Theme.glowRadiusLg
+                shadowColor: Theme.holoTeal
+                shadowVerticalOffset: 0
+                shadowHorizontalOffset: 0
 
-            // Subtle rotate animation
-            RotationAnimation on rotation {
-                from: 0; to: 360
-                duration: 20000
-                loops: Animation.Infinite
+                SequentialAnimation on shadowOpacity {
+                    running: Theme.enableEffects
+                    loops: Animation.Infinite
+                    NumberAnimation { to: 1.0; duration: 1600; easing.type: Easing.InOutSine }
+                    NumberAnimation { to: 0.55; duration: 1600; easing.type: Easing.InOutSine }
+                }
             }
         }
 
@@ -84,7 +107,6 @@ Item {
             font.pixelSize: Theme.fontBody
         }
 
-        // Progress dots
         Row {
             anchors.horizontalCenter: parent.horizontalCenter
             spacing: 8
@@ -94,13 +116,13 @@ Item {
                 model: 4
                 Rectangle {
                     width: 8; height: 8; radius: 4
-                    color: Theme.primaryColor
+                    color: Theme.holoTeal
                     opacity: 0.2
 
                     SequentialAnimation on opacity {
                         loops: Animation.Infinite
                         PauseAnimation { duration: index * 400 }
-                        NumberAnimation { to: 0.8; duration: 400 }
+                        NumberAnimation { to: 0.9; duration: 400 }
                         NumberAnimation { to: 0.2; duration: 400 }
                         PauseAnimation { duration: (3 - index) * 400 }
                     }
@@ -109,7 +131,6 @@ Item {
         }
     }
 
-    // Fade-in animation
     NumberAnimation {
         id: fadeIn
         target: centerContent; property: "opacity"
@@ -118,7 +139,6 @@ Item {
     }
     Component.onCompleted: fadeIn.start()
 
-    // Auto-return timer
     Timer {
         interval: 5000
         running: true

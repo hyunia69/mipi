@@ -1,40 +1,69 @@
 import sys
-import os
 from pathlib import Path
-from PySide6.QtGui import QGuiApplication, QFontDatabase
-from PySide6.QtQml import QQmlApplicationEngine
+
 from PySide6.QtCore import QUrl
+from PySide6.QtGui import QFontDatabase, QGuiApplication
+from PySide6.QtQml import QQmlApplicationEngine
 
 
-def main():
+FONT_PREFERENCES = ("Pretendard", "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo")
+
+
+def load_application_fonts(font_dir: Path) -> list[str]:
+    loaded_families: list[str] = []
+    if not font_dir.exists():
+        return loaded_families
+    for pattern in ("*.otf", "*.ttf"):
+        for font_file in sorted(font_dir.glob(pattern)):
+            font_id = QFontDatabase.addApplicationFont(str(font_file))
+            if font_id == -1:
+                print(f"[fonts] Failed to load: {font_file.name}", file=sys.stderr)
+                continue
+            for family in QFontDatabase.applicationFontFamilies(font_id):
+                if family not in loaded_families:
+                    loaded_families.append(family)
+    return loaded_families
+
+
+def resolve_primary_font(loaded_families: list[str]) -> str:
+    system_families = set(QFontDatabase.families())
+    available = set(loaded_families) | system_families
+    for candidate in FONT_PREFERENCES:
+        if candidate in available:
+            return candidate
+    return QGuiApplication.font().family()
+
+
+def main() -> int:
     app = QGuiApplication(sys.argv)
     app.setApplicationName("Digital Telescope Kiosk")
     app.setOrganizationName("Dasam")
 
-    # Load custom fonts if available
-    base_dir = Path(__file__).parent
-    font_dir = base_dir / "assets" / "fonts"
-    if font_dir.exists():
-        for ext in ("*.otf", "*.ttf"):
-            for font_file in font_dir.glob(ext):
-                QFontDatabase.addApplicationFont(str(font_file))
+    base_dir = Path(__file__).resolve().parent
+    assets_dir = base_dir / "assets"
+
+    loaded = load_application_fonts(assets_dir / "fonts")
+    primary_font = resolve_primary_font(loaded)
+    print(f"[fonts] Loaded: {loaded or '(none)'}  |  Primary: {primary_font}")
 
     engine = QQmlApplicationEngine()
 
-    # QML import paths
+    ctx = engine.rootContext()
+    ctx.setContextProperty("ASSETS_URL", QUrl.fromLocalFile(str(assets_dir)).toString())
+    ctx.setContextProperty("PRIMARY_FONT", primary_font)
+
     qml_dir = base_dir / "qml"
     engine.addImportPath(str(qml_dir))
 
-    # Load main QML
     qml_file = qml_dir / "Main.qml"
     engine.load(QUrl.fromLocalFile(str(qml_file)))
 
     if not engine.rootObjects():
-        print("Failed to load QML")
-        sys.exit(-1)
+        print("Failed to load QML", file=sys.stderr)
+        return -1
 
-    sys.exit(app.exec())
+    return app.exec()
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

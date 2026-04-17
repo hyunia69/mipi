@@ -7,7 +7,8 @@ Item {
     property int interval: 6000
     property int currentIndex: 0
 
-    // Abstract landscape palettes [sky, mountain, valley]
+    readonly property string _assetsUrl: typeof ASSETS_URL !== "undefined" ? ASSETS_URL : ""
+
     readonly property var palettes: [
         ["#0F2027", "#203A43", "#2C5364"],
         ["#141E30", "#243B55", "#4B79A1"],
@@ -16,28 +17,49 @@ Item {
         ["#10002B", "#240046", "#3C096C"]
     ]
 
-    // Slides rendered as gradient rectangles
     Repeater {
         model: root.palettes.length
 
-        Rectangle {
+        Item {
             anchors.fill: parent
             opacity: index === root.currentIndex ? 1.0 : 0.0
             z: index === root.currentIndex ? 1 : 0
+            Behavior on opacity { NumberAnimation { duration: 1500; easing.type: Easing.InOutQuad } }
 
-            gradient: Gradient {
-                GradientStop { position: 0.0; color: root.palettes[index][0] }
-                GradientStop { position: 0.5; color: root.palettes[index][1] }
-                GradientStop { position: 1.0; color: root.palettes[index][2] }
+            Rectangle {
+                anchors.fill: parent
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: root.palettes[index][0] }
+                    GradientStop { position: 0.5; color: root.palettes[index][1] }
+                    GradientStop { position: 1.0; color: root.palettes[index][2] }
+                }
             }
 
-            Behavior on opacity {
-                NumberAnimation { duration: 1500; easing.type: Easing.InOutQuad }
+            Image {
+                id: slideImage
+                anchors.fill: parent
+                source: root._assetsUrl.length > 0
+                    ? root._assetsUrl + "/slideshow/seoul-" + (index + 1 < 10 ? "0" : "") + (index + 1) + ".jpg"
+                    : ""
+                asynchronous: true
+                cache: false
+                fillMode: Image.PreserveAspectCrop
+                sourceSize.width: 1920
+                sourceSize.height: 1080
+                opacity: status === Image.Ready ? 1.0 : 0.0
+                Behavior on opacity { NumberAnimation { duration: 600 } }
+                transformOrigin: Item.Center
+
+                SequentialAnimation on scale {
+                    running: slideImage.status === Image.Ready && index === root.currentIndex
+                    loops: Animation.Infinite
+                    NumberAnimation { from: 1.00; to: 1.08; duration: 8000; easing.type: Easing.InOutSine }
+                    NumberAnimation { from: 1.08; to: 1.00; duration: 8000; easing.type: Easing.InOutSine }
+                }
             }
         }
     }
 
-    // Decorative mountain silhouette
     Canvas {
         anchors.fill: parent
         z: 2
@@ -45,7 +67,6 @@ Item {
             var ctx = getContext("2d");
             var w = width, h = height;
 
-            // Distant peaks
             ctx.fillStyle = Qt.rgba(0, 0, 0, 0.2);
             ctx.beginPath();
             ctx.moveTo(0, h);
@@ -63,7 +84,6 @@ Item {
             ctx.closePath();
             ctx.fill();
 
-            // Near ridge
             ctx.fillStyle = Qt.rgba(0, 0, 0, 0.35);
             ctx.beginPath();
             ctx.moveTo(0, h);
@@ -82,7 +102,6 @@ Item {
         }
     }
 
-    // Animated shimmer (subtle light sweep)
     Rectangle {
         id: shimmer
         width: parent.width * 0.4
@@ -94,7 +113,7 @@ Item {
         gradient: Gradient {
             orientation: Gradient.Horizontal
             GradientStop { position: 0.0; color: "transparent" }
-            GradientStop { position: 0.5; color: Qt.rgba(1, 1, 1, 0.03) }
+            GradientStop { position: 0.5; color: Qt.rgba(1, 1, 1, 0.035) }
             GradientStop { position: 1.0; color: "transparent" }
         }
 

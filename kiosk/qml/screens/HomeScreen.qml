@@ -7,24 +7,29 @@ Item {
 
     signal startViewing()
 
-    // === Background Slideshow ===
     ImageSlideshow {
         anchors.fill: parent
         interval: 6000
     }
 
-    // === Gradient overlay (bottom heavy) ===
+    StarsBackdrop {
+        anchors.fill: parent
+        z: 1
+        count: 55
+        topFraction: 0.55
+    }
+
     Rectangle {
         anchors.fill: parent
+        z: 2
         gradient: Gradient {
             GradientStop { position: 0.0; color: "transparent" }
             GradientStop { position: 0.35; color: "transparent" }
-            GradientStop { position: 0.65; color: Qt.rgba(13, 17, 23, 0.6) }
+            GradientStop { position: 0.65; color: Qt.rgba(13/255, 17/255, 23/255, 0.6) }
             GradientStop { position: 1.0; color: Theme.backgroundColor }
         }
     }
 
-    // === Top Status Bar ===
     StatusBar {
         anchors.top: parent.top
         anchors.left: parent.left
@@ -32,7 +37,6 @@ Item {
         z: 10
     }
 
-    // === Bottom Content ===
     Column {
         anchors.left: parent.left
         anchors.right: parent.right
@@ -41,18 +45,19 @@ Item {
         anchors.rightMargin: Theme.spacingXL
         anchors.bottomMargin: Theme.spacingLG
         spacing: Theme.spacingMD
+        z: 5
 
-        // Hero text
         Column {
             spacing: 8
 
             Text {
                 text: "DIGITAL TELESCOPE"
-                color: Theme.textMuted
+                color: Theme.holoTeal
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.fontCaption
                 font.weight: Font.Medium
                 font.letterSpacing: 6
+                opacity: 0.85
             }
 
             Text {
@@ -62,17 +67,8 @@ Item {
                 font.pixelSize: Theme.fontHero
                 font.weight: Font.Bold
             }
-
-            Text {
-                text: "40                                       ."
-                color: Theme.textSecondary
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontHeading
-                visible: false
-            }
         }
 
-        // Landmark cards scroll
         ListView {
             id: cardList
             width: parent.width
@@ -81,25 +77,39 @@ Item {
             spacing: Theme.spacingSM
             clip: true
             boundsBehavior: Flickable.StopAtBounds
+            interactive: true
 
             model: ListModel {
-                ListElement { name: "Namsan Tower";     dist: "2.3km"; dir: "NE"; clr: "#1B4332" }
-                ListElement { name: "Lotte World Tower"; dist: "8.1km"; dir: "E";  clr: "#14213D" }
-                ListElement { name: "Hangang Bridge";   dist: "1.5km"; dir: "S";  clr: "#023E8A" }
-                ListElement { name: "Gyeongbokgung";    dist: "4.2km"; dir: "N";  clr: "#3D405B" }
-                ListElement { name: "63 Building";      dist: "5.7km"; dir: "SW"; clr: "#1A1A2E" }
-                ListElement { name: "Bukhansan";        dist: "9.3km"; dir: "N";  clr: "#264653" }
+                ListElement { key: "namsan";    name: "Namsan Tower";      dist: "2.3km"; dir: "NE"; clr: "#1B4332" }
+                ListElement { key: "lotte";     name: "Lotte World Tower"; dist: "8.1km"; dir: "E";  clr: "#14213D" }
+                ListElement { key: "hangang";   name: "Hangang Bridge";    dist: "1.5km"; dir: "S";  clr: "#023E8A" }
+                ListElement { key: "gyeongbok"; name: "Gyeongbokgung";     dist: "4.2km"; dir: "N";  clr: "#3D405B" }
+                ListElement { key: "sixty3";    name: "63 Building";       dist: "5.7km"; dir: "SW"; clr: "#1A1A2E" }
+                ListElement { key: "bukhan";    name: "Bukhansan";         dist: "9.3km"; dir: "N";  clr: "#264653" }
             }
 
             delegate: LocationCard {
+                id: card
                 name: model.name
                 distance: model.dist
                 direction: model.dir
                 thumbColor: model.clr
+                thumbSource: (typeof ASSETS_URL !== "undefined" ? ASSETS_URL : "") + "/landmarks/" + model.key + "/thumb.jpg"
+
+                opacity: 0
+                transform: Translate { id: cardShift; x: -36 }
+
+                SequentialAnimation {
+                    running: true
+                    PauseAnimation { duration: 250 + index * 90 }
+                    ParallelAnimation {
+                        NumberAnimation { target: card;      property: "opacity"; from: 0; to: 1;  duration: 500; easing.type: Easing.OutCubic }
+                        NumberAnimation { target: cardShift; property: "x";       to: 0;            duration: 500; easing.type: Easing.OutCubic }
+                    }
+                }
             }
         }
 
-        // CTA Button
         TouchButton {
             width: parent.width
             height: 88
@@ -109,14 +119,12 @@ Item {
             onClicked: root.startViewing()
         }
 
-        // Announcement banner
         AnnouncementBanner {
             width: parent.width
             message: "Operating Hours 09:00 - 18:00   |   Service may be suspended during rain   |   Contact: 02-1234-5678   |   Please do not lean on the railings"
         }
     }
 
-    // Fade-in on load
     opacity: 0
     Component.onCompleted: fadeIn.start()
     NumberAnimation {

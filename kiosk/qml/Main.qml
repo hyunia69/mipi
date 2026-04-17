@@ -12,6 +12,8 @@ ApplicationWindow {
     title: "Digital Telescope Kiosk"
     color: Theme.backgroundColor
 
+    Component.onCompleted: Theme.init(typeof PRIMARY_FONT !== "undefined" ? PRIMARY_FONT : "")
+
     StackView {
         id: nav
         anchors.fill: parent
@@ -19,27 +21,37 @@ ApplicationWindow {
 
         pushEnter: Transition {
             ParallelAnimation {
-                PropertyAnimation { property: "opacity"; from: 0; to: 1; duration: Theme.animNormal; easing.type: Easing.OutCubic }
-                PropertyAnimation { property: "x"; from: 80; to: 0; duration: Theme.animNormal; easing.type: Easing.OutCubic }
+                PropertyAnimation { property: "opacity"; from: 0; to: 1; duration: 420; easing.type: Easing.OutCubic }
+                PropertyAnimation { property: "scale";   from: 0.94; to: 1.0; duration: 420; easing.type: Easing.OutCubic }
+                PropertyAnimation { property: "x";       from: 60; to: 0; duration: 420; easing.type: Easing.OutCubic }
             }
         }
         pushExit: Transition {
-            PropertyAnimation { property: "opacity"; from: 1; to: 0; duration: Theme.animNormal; easing.type: Easing.OutCubic }
+            ParallelAnimation {
+                PropertyAnimation { property: "opacity"; from: 1; to: 0; duration: 280; easing.type: Easing.InCubic }
+                PropertyAnimation { property: "scale";   from: 1.0; to: 1.04; duration: 280; easing.type: Easing.InCubic }
+            }
         }
         popEnter: Transition {
-            PropertyAnimation { property: "opacity"; from: 0; to: 1; duration: Theme.animNormal; easing.type: Easing.OutCubic }
+            ParallelAnimation {
+                PropertyAnimation { property: "opacity"; from: 0; to: 1; duration: 360; easing.type: Easing.OutCubic }
+                PropertyAnimation { property: "scale";   from: 1.04; to: 1.0; duration: 360; easing.type: Easing.OutCubic }
+            }
         }
         popExit: Transition {
             ParallelAnimation {
-                PropertyAnimation { property: "opacity"; from: 1; to: 0; duration: Theme.animNormal; easing.type: Easing.OutCubic }
-                PropertyAnimation { property: "x"; from: 0; to: 80; duration: Theme.animNormal; easing.type: Easing.OutCubic }
+                PropertyAnimation { property: "opacity"; from: 1; to: 0; duration: 280; easing.type: Easing.InCubic }
+                PropertyAnimation { property: "x";       from: 0; to: 80; duration: 280; easing.type: Easing.InCubic }
             }
         }
         replaceEnter: Transition {
-            PropertyAnimation { property: "opacity"; from: 0; to: 1; duration: Theme.animSlow; easing.type: Easing.OutCubic }
+            ParallelAnimation {
+                PropertyAnimation { property: "opacity"; from: 0; to: 1; duration: Theme.animSlow; easing.type: Easing.OutCubic }
+                PropertyAnimation { property: "scale";   from: 0.96; to: 1.0; duration: Theme.animSlow; easing.type: Easing.OutCubic }
+            }
         }
         replaceExit: Transition {
-            PropertyAnimation { property: "opacity"; from: 1; to: 0; duration: Theme.animSlow; easing.type: Easing.OutCubic }
+            PropertyAnimation { property: "opacity"; from: 1; to: 0; duration: Theme.animSlow; easing.type: Easing.InCubic }
         }
     }
 

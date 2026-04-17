@@ -1,0 +1,73 @@
+{
+  "landmarks": [
+    {
+      "key": "namsan",
+      "label": "Namsan Tower",
+      "queries": {
+        "hero": "Namsan Tower Seoul",
+        "night": "N Seoul Tower night"
+      }
+    },
+    {
+      "key": "lotte",
+      "label": "Lotte World Tower",
+      "queries": {
+        "hero": "Lotte World Tower",
+        "night": "Lotte World Tower night"
+      }
+    },
+    {
+      "key": "hangang",
+      "label": "Hangang Bridge",
+      "queries": {
+        "hero": "Hangang Bridge",
+        "night": "Han River Seoul night"
+      }
+    },
+    {
+      "key": "gyeongbok",
+      "label": "Gyeongbokgung",
+      "queries": {
+        "hero": "Gyeongbokgung",
+        "night": "Gyeongbokgung autumn"
+      }
+    },
+    {
+      "key": "sixty3",
+      "label": "63 Building",
+      "queries": {
+        "hero": "63 Building Seoul",
+        "night": "Yeouido 63 Building"
+      }
+    },
+    {
+      "key": "bukhan",
+      "label": "Bukhansan",
+      "queries": {
+        "hero": "Bukhansan",
+        "night": "Bukhansan autumn"
+      }
+    }
+  ],
+  "slideshow": {
+    "count": 5,
+    "queries": [
+      "Seoul skyline panorama",
+      "Seoul cityscape sunset",
+      "Han River Seoul",
+      "Seoul night",
+      "Seoul observation deck"
+    ]
+  },
+  "icons": [
+    "plus", "minus", "house", "x", "wifi", "clock",
+    "compass", "map-pin", "mountain", "megaphone",
+    "credit-card", "telescope", "star", "maximize",
+    "minimize", "chevron-right", "chevron-left",
+    "info", "ruler", "navigation", "eye"
+  ],
+  "fonts": {
+    "pretendard_version": "1.3.9",
+    "weights": ["Regular", "Medium", "SemiBold", "Bold"]
+  }
+}

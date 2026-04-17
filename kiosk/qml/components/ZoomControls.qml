@@ -8,7 +8,6 @@ Column {
     signal zoomIn()
     signal zoomOut()
 
-    // Zoom In button
     Rectangle {
         id: zoomInBtn
         width: 60; height: 60; radius: 30
@@ -16,12 +15,11 @@ Column {
         border.color: Qt.rgba(1, 1, 1, 0.2)
         border.width: 1
 
-        Text {
+        Icon {
             anchors.centerIn: parent
-            text: "+"
+            name: "plus"
             color: Theme.textPrimary
-            font.pixelSize: 28
-            font.weight: Font.Light
+            size: 26
         }
 
         MouseArea {
@@ -35,24 +33,21 @@ Column {
         Behavior on scale { NumberAnimation { duration: 100 } }
     }
 
-    // Track indicator
     Item {
         width: 60; height: 100
         anchors.horizontalCenter: parent.horizontalCenter
 
-        // Track bar
         Rectangle {
             anchors.centerIn: parent
             width: 3; height: 80; radius: 2
             color: Qt.rgba(1, 1, 1, 0.15)
         }
 
-        // Level indicator (static for demo)
         Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             y: 50
             width: 14; height: 14; radius: 7
-            color: Theme.primaryColor
+            color: Theme.holoTeal
 
             Rectangle {
                 anchors.centerIn: parent
@@ -62,7 +57,6 @@ Column {
         }
     }
 
-    // Zoom Out button
     Rectangle {
         id: zoomOutBtn
         width: 60; height: 60; radius: 30
@@ -70,11 +64,11 @@ Column {
         border.color: Qt.rgba(1, 1, 1, 0.2)
         border.width: 1
 
-        // Minus line
-        Rectangle {
+        Icon {
             anchors.centerIn: parent
-            width: 18; height: 2; radius: 1
+            name: "minus"
             color: Theme.textPrimary
+            size: 26
         }
 
         MouseArea {

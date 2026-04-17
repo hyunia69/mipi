@@ -22,8 +22,15 @@ QtObject {
     readonly property color errorColor: "#EF4444"
     readonly property color warningColor: "#F59E0B"
 
+    // === Holographic Palette (information layer) ===
+    readonly property color holoTeal: "#22D3EE"
+    readonly property color cosmicPurple: "#A78BFA"
+    readonly property color amberWarm: "#FBBF24"
+    readonly property color holoGridLine: Qt.rgba(0.13, 0.83, 0.93, 0.06)
+
     // === Typography ===
-    readonly property string fontFamily: "Malgun Gothic"
+    property string fontFamily: "Pretendard"
+    function init(primary) { if (primary && primary.length > 0) fontFamily = primary }
     readonly property int fontHero: 64
     readonly property int fontDisplay: 48
     readonly property int fontTitle: 32
@@ -49,4 +56,21 @@ QtObject {
     readonly property int animFast: 150
     readonly property int animNormal: 300
     readonly property int animSlow: 500
+
+    // === Effect tokens (MultiEffect) ===
+    readonly property real glowRadiusSm: 0.4
+    readonly property real glowRadiusMd: 0.7
+    readonly property real glowRadiusLg: 1.0
+    readonly property int shadowOffsetSm: 4
+    readonly property int shadowOffsetMd: 8
+    readonly property int shadowOffsetLg: 16
+    readonly property real shadowBlurSoft: 0.6
+    readonly property real shadowBlurDeep: 1.0
+    readonly property real blurMaxPanel: 32.0
+
+    // === Runtime quality flags ===
+    // Set by main.py from config or settings UI.
+    property bool enableEffects: true
+    property bool enableParticles: true
+    property bool enableBlur: true
 }

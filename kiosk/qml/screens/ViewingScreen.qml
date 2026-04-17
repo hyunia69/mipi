@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 import ".."
 import "../components"
 
@@ -108,16 +109,56 @@ Item {
         }
     }
 
-    // === Crosshair (center) ===
+    // === Holographic Crosshair (center) ===
     Item {
+        id: crosshair
         anchors.centerIn: parent
-        width: 60; height: 60
-        opacity: 0.2
+        width: 80; height: 80
+        z: 40
 
-        Rectangle { anchors.horizontalCenter: parent.horizontalCenter; y: 0; width: 1; height: 20; color: "white" }
-        Rectangle { anchors.horizontalCenter: parent.horizontalCenter; y: 40; width: 1; height: 20; color: "white" }
-        Rectangle { x: 0; anchors.verticalCenter: parent.verticalCenter; width: 20; height: 1; color: "white" }
-        Rectangle { x: 40; anchors.verticalCenter: parent.verticalCenter; width: 20; height: 1; color: "white" }
+        Item {
+            id: crosshairVisuals
+            anchors.fill: parent
+            layer.enabled: Theme.enableEffects
+
+            Rectangle { anchors.horizontalCenter: parent.horizontalCenter; y: 0;  width: 1; height: 26; color: Theme.holoTeal; opacity: 0.55 }
+            Rectangle { anchors.horizontalCenter: parent.horizontalCenter; y: 54; width: 1; height: 26; color: Theme.holoTeal; opacity: 0.55 }
+            Rectangle { x: 0;  anchors.verticalCenter: parent.verticalCenter; width: 26; height: 1; color: Theme.holoTeal; opacity: 0.55 }
+            Rectangle { x: 54; anchors.verticalCenter: parent.verticalCenter; width: 26; height: 1; color: Theme.holoTeal; opacity: 0.55 }
+
+            Rectangle {
+                anchors.centerIn: parent
+                width: 18; height: 18; radius: 9
+                color: "transparent"
+                border.color: Theme.holoTeal
+                border.width: 1
+                opacity: 0.55
+            }
+            Rectangle {
+                anchors.centerIn: parent
+                width: 2; height: 2; radius: 1
+                color: Theme.holoTeal
+            }
+        }
+
+        MultiEffect {
+            source: crosshairVisuals
+            anchors.fill: crosshairVisuals
+            enabled: Theme.enableEffects
+            visible: enabled
+            shadowEnabled: true
+            shadowBlur: Theme.glowRadiusMd
+            shadowColor: Theme.holoTeal
+            shadowVerticalOffset: 0
+            shadowHorizontalOffset: 0
+        }
+
+        RotationAnimation on rotation {
+            running: Theme.enableEffects
+            from: 0; to: 360
+            duration: 120000
+            loops: Animation.Infinite
+        }
     }
 
     // === AI Detection Overlays ===
@@ -128,7 +169,7 @@ Item {
         confidence: 0.97
         selected: infoPanel.isOpen && infoPanel.landmarkName === "Namsan Tower"
         onTapped: openLandmark(
-            "Namsan Tower", "N Seoul Tower",
+            "namsan", "Namsan Tower", "N Seoul Tower",
             "Seoul's iconic landmark offering panoramic views of the city. The tower sits atop Namsan Mountain at 236m elevation, serving as both a broadcasting tower and major tourist attraction.",
             "Built in 1969 as a broadcasting tower, it was opened to the public in 1980 and has since become one of Seoul's most visited landmarks.",
             "2.3km", "Northeast", "236m", "#1B4332"
@@ -142,7 +183,7 @@ Item {
         confidence: 0.94
         selected: infoPanel.isOpen && infoPanel.landmarkName === "Lotte World Tower"
         onTapped: openLandmark(
-            "Lotte World Tower", "Lotte World Tower",
+            "lotte", "Lotte World Tower", "Lotte World Tower",
             "Standing at 555m, this supertall skyscraper is the tallest building in South Korea and the fifth tallest in the world. It houses an observation deck, hotel, offices, and shopping complex.",
             "Construction began in 2011 and was completed in 2017. The Seoul Sky observation deck on floors 117-123 offers breathtaking views.",
             "8.1km", "East", "555m", "#14213D"
@@ -156,7 +197,7 @@ Item {
         confidence: 0.91
         selected: infoPanel.isOpen && infoPanel.landmarkName === "Hangang Bridge"
         onTapped: openLandmark(
-            "Hangang Bridge", "Hangang Bridge",
+            "hangang", "Hangang Bridge", "Hangang Bridge",
             "A major bridge crossing the Han River, connecting Yongsan-gu and Dongjak-gu districts. It holds historical significance as the first pedestrian bridge over the Han River.",
             "Originally opened in 1917 as a pedestrian bridge, it was destroyed during the Korean War and rebuilt in 1958.",
             "1.5km", "South", "", "#023E8A"
@@ -274,7 +315,13 @@ Item {
         onCloseRequested: infoPanel.isOpen = false
     }
 
-    function openLandmark(name, nameEn, desc, hist, dist, dir, alt, clr) {
+    // === CRT Scanline Overlay (observation metaphor) ===
+    ScanlineOverlay {
+        anchors.fill: parent
+        z: 45
+    }
+
+    function openLandmark(key, name, nameEn, desc, hist, dist, dir, alt, clr) {
         infoPanel.landmarkName = name;
         infoPanel.landmarkNameEn = nameEn;
         infoPanel.description = desc;
@@ -283,6 +330,7 @@ Item {
         infoPanel.direction = dir;
         infoPanel.altitude = alt;
         infoPanel.thumbColor = clr;
+        infoPanel.heroSource = (typeof ASSETS_URL !== "undefined" ? ASSETS_URL : "") + "/landmarks/" + key + "/night.jpg";
         infoPanel.isOpen = true;
     }
 }
