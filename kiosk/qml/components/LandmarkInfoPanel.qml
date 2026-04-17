@@ -33,7 +33,16 @@ Item {
         color: Theme.isMinimal ? Qt.rgba(0, 0, 0, 0.85) : Qt.rgba(13/255, 17/255, 23/255, 0.95)
         border.color: Theme.glassBorder
         border.width: 1
+
         layer.enabled: Theme.enableEffects
+        layer.effect: MultiEffect {
+            shadowEnabled: true
+            shadowBlur: Theme.isMinimal ? 0.8 : Theme.shadowBlurDeep
+            shadowColor: Qt.rgba(0, 0, 0, 0.6)
+            shadowHorizontalOffset: -10
+            shadowVerticalOffset: 0
+            autoPaddingEnabled: true
+        }
 
         // Left accent border for Holo
         Rectangle {
@@ -204,17 +213,5 @@ Item {
                 }
             }
         }
-    }
-
-    MultiEffect {
-        source: body
-        anchors.fill: body
-        enabled: Theme.enableEffects
-        visible: enabled
-        shadowEnabled: true
-        shadowBlur: Theme.isMinimal ? 0.8 : Theme.shadowBlurDeep
-        shadowColor: Qt.rgba(0, 0, 0, 0.6)
-        shadowHorizontalOffset: -10
-        shadowVerticalOffset: 0
     }
 }

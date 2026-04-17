@@ -46,105 +46,105 @@ Item {
             ? (Theme.isMinimal ? Theme.textPrimary : (Theme.isFuture ? Theme.futureMagenta : Qt.rgba(0.13, 0.83, 0.93, 0.55)))
             : Theme.glassBorder
         border.width: Theme.isFuture ? (mouseArea.containsMouse ? 2 : 1) : 1
-        clip: true
-        layer.enabled: Theme.enableEffects
+        
+        layer.enabled: Theme.enableEffects && (mouseArea.containsMouse || Theme.isFuture)
+        layer.effect: MultiEffect {
+            shadowEnabled: true
+            shadowBlur: mouseArea.containsMouse ? Theme.glowRadiusLg : Theme.glowRadiusSm
+            shadowColor: Theme.isMinimal ? Qt.rgba(0, 0, 0, 0.5) : (Theme.isFuture ? Qt.rgba(168/255, 85/255, 247/255, 0.4) : Qt.rgba(0.13, 0.83, 0.93, 0.45))
+            shadowVerticalOffset: Theme.isMinimal ? 8 : (Theme.isFuture ? 12 : Theme.shadowOffsetMd)
+            shadowHorizontalOffset: 0
+            autoPaddingEnabled: true
+        }
 
-        // Future background pattern
-        Rectangle {
+        Item {
             anchors.fill: parent
-            visible: Theme.isFuture
-            color: "transparent"
-            opacity: 0.1
-            Canvas {
-                anchors.fill: parent
-                onPaint: {
-                    var ctx = getContext("2d");
-                    ctx.strokeStyle = Theme.futureCyan;
-                    ctx.lineWidth = 0.5;
-                    for(var i=0; i<width; i+=20) {
-                        ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, height); ctx.stroke();
-                    }
-                    for(var j=0; j<height; j+=20) {
-                        ctx.beginPath(); ctx.moveTo(0, j); ctx.lineTo(width, j); ctx.stroke();
-                    }
-                }
-            }
-        }
+            clip: true
 
-        Rectangle {
-            id: thumb
-            width: parent.width
-            height: Theme.isMinimal ? 140 : (Theme.isFuture ? 150 : 120)
-            color: root.thumbColor
-
-            Image {
-                id: thumbImage
-                anchors.fill: parent
-                source: root.thumbSource
-                asynchronous: true
-                cache: true
-                fillMode: Image.PreserveAspectCrop
-                sourceSize.width: 480
-                sourceSize.height: 320
-                visible: status === Image.Ready
-            }
-
+            // Future background pattern
             Rectangle {
                 anchors.fill: parent
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: "transparent" }
-                    GradientStop { position: 1.0; color: Qt.rgba(0, 0, 0, Theme.isMinimal ? 0.6 : 0.4) }
-                }
-            }
-            
-            // Future accent line
-            Rectangle {
-                anchors.bottom: parent.bottom
-                width: parent.width
-                height: 2
-                color: Theme.futureMagenta
                 visible: Theme.isFuture
-                opacity: 0.8
+                color: "transparent"
+                opacity: 0.1
+                Canvas {
+                    anchors.fill: parent
+                    onPaint: {
+                        var ctx = getContext("2d");
+                        ctx.strokeStyle = Theme.futureCyan;
+                        ctx.lineWidth = 0.5;
+                        for(var i=0; i<width; i+=20) {
+                            ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, height); ctx.stroke();
+                        }
+                        for(var j=0; j<height; j+=20) {
+                            ctx.beginPath(); ctx.moveTo(0, j); ctx.lineTo(width, j); ctx.stroke();
+                        }
+                    }
+                }
             }
-        }
 
-        Column {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
-            anchors.margins: Theme.spacingSM
-            spacing: 2
+            Rectangle {
+                id: thumb
+                width: parent.width
+                height: Theme.isMinimal ? 140 : (Theme.isFuture ? 150 : 120)
+                color: root.thumbColor
 
-            Text {
-                text: root.name
-                color: Theme.textPrimary
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.isFuture ? 20 : 18
-                font.weight: Theme.isMinimal ? Font.Medium : Font.Bold
+                Image {
+                    id: thumbImage
+                    anchors.fill: parent
+                    source: root.thumbSource
+                    asynchronous: true
+                    cache: true
+                    fillMode: Image.PreserveAspectCrop
+                    sourceSize.width: 480
+                    sourceSize.height: 320
+                    visible: status === Image.Ready
+                }
+
+                Rectangle {
+                    anchors.fill: parent
+                    gradient: Gradient {
+                        GradientStop { position: 0.0; color: "transparent" }
+                        GradientStop { position: 1.0; color: Qt.rgba(0, 0, 0, Theme.isMinimal ? 0.6 : 0.4) }
+                    }
+                }
+                
+                // Future accent line
+                Rectangle {
+                    anchors.bottom: parent.bottom
+                    width: parent.width
+                    height: 2
+                    color: Theme.futureMagenta
+                    visible: Theme.isFuture
+                    opacity: 0.8
+                }
             }
 
-            Row {
-                spacing: 6
-                Text { text: root.distance; color: Theme.isFuture ? Theme.futureCyan : Theme.textMuted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSmall }
-                Text { text: "|"; color: Qt.rgba(1, 1, 1, 0.15); font.pixelSize: Theme.fontSmall }
-                Text { text: root.direction; color: Theme.isFuture ? Theme.futureCyan : Theme.textMuted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSmall }
+            Column {
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                anchors.margins: Theme.spacingSM
+                spacing: 2
+
+                Text {
+                    text: root.name
+                    color: Theme.textPrimary
+                    font.family: Theme.fontFamily
+                    font.pixelSize: Theme.isFuture ? 20 : 18
+                    font.weight: Theme.isMinimal ? Font.Medium : Font.Bold
+                }
+
+                Row {
+                    spacing: 6
+                    Text { text: root.distance; color: Theme.isFuture ? Theme.futureCyan : Theme.textMuted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSmall }
+                    Text { text: "|"; color: Qt.rgba(1, 1, 1, 0.15); font.pixelSize: Theme.fontSmall }
+                    Text { text: root.direction; color: Theme.isFuture ? Theme.futureCyan : Theme.textMuted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSmall }
+                }
             }
         }
 
         Behavior on border.color { ColorAnimation { duration: Theme.animNormal } }
-    }
-
-    MultiEffect {
-        source: body
-        anchors.fill: body
-        anchors.margins: -32 // Prevents shadow clipping
-        enabled: Theme.enableEffects && (mouseArea.containsMouse || Theme.isFuture)
-        visible: enabled
-        shadowEnabled: true
-        shadowBlur: mouseArea.containsMouse ? Theme.glowRadiusLg : Theme.glowRadiusSm
-        shadowColor: Theme.isMinimal ? Qt.rgba(0, 0, 0, 0.5) : (Theme.isFuture ? Qt.rgba(168/255, 85/255, 247/255, 0.4) : Qt.rgba(0.13, 0.83, 0.93, 0.45))
-        shadowVerticalOffset: Theme.isMinimal ? 8 : (Theme.isFuture ? 12 : Theme.shadowOffsetMd)
-        shadowHorizontalOffset: 0
     }
 
     MouseArea {

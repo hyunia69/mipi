@@ -441,7 +441,7 @@ Item {
         infoPanel.direction = d.direction;
         infoPanel.altitude = d.altitude;
         infoPanel.thumbColor = d.thumbColor;
-        infoPanel.heroSource = LandmarkData.nightImage(key);
+        infoPanel.heroSource = LandmarkData.heroImage(key);
         infoPanel.isOpen = true;
     }
 }

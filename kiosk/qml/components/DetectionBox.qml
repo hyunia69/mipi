@@ -14,7 +14,16 @@ Item {
     Item {
         id: visualGroup
         anchors.fill: parent
-        layer.enabled: Theme.enableEffects
+        
+        layer.enabled: Theme.enableEffects && !Theme.isMinimal
+        layer.effect: MultiEffect {
+            shadowEnabled: true
+            shadowBlur: root.selected ? Theme.glowRadiusLg : Theme.glowRadiusSm
+            shadowColor: root.selected ? Theme.amberWarm : Theme.holoTeal
+            shadowVerticalOffset: 0
+            shadowHorizontalOffset: 0
+            autoPaddingEnabled: true
+        }
 
         Rectangle {
             anchors.fill: parent
@@ -66,18 +75,6 @@ Item {
                 PropertyAnimation { from: root.height - 4; to: 4; duration: 3000; easing.type: Easing.InOutSine }
             }
         }
-    }
-
-    MultiEffect {
-        source: visualGroup
-        anchors.fill: visualGroup
-        enabled: Theme.enableEffects && !Theme.isMinimal
-        visible: enabled
-        shadowEnabled: true
-        shadowBlur: root.selected ? Theme.glowRadiusLg : Theme.glowRadiusSm
-        shadowColor: root.selected ? Theme.amberWarm : Theme.holoTeal
-        shadowVerticalOffset: 0
-        shadowHorizontalOffset: 0
     }
 
     // Label tag

@@ -23,58 +23,69 @@ Item {
         color: root.isGradient ? "transparent" : (Theme.isMinimal ? Theme.surfaceColor : (Theme.isFuture ? Qt.rgba(0.1, 0.2, 0.4, 0.3) : Theme.surfaceColor))
         border.color: root.isGradient ? "transparent" : (Theme.isFuture ? Theme.futureCyan : Theme.glassBorder)
         border.width: root.isGradient ? 0 : (Theme.isFuture ? 2 : 1)
-        clip: true
-        layer.enabled: Theme.isFuture // Ensures rounded clipping for internal effects
+        
+        // Use layer for the effect to prevent double rendering and layout issues
+        layer.enabled: Theme.enableEffects && (root.isGradient || Theme.isMinimal || Theme.isFuture)
+        layer.effect: MultiEffect {
+            shadowEnabled: true
+            shadowBlur: Theme.isMinimal ? 0.4 : (Theme.isFuture ? 0.8 : Theme.shadowBlurSoft)
+            shadowColor: Theme.isFuture ? Qt.rgba(255/255, 0/255, 229/255, 0.6) : (root.isGradient ? Qt.rgba(0.55, 0.44, 0.98, 0.4) : Qt.rgba(0, 0, 0, 0.3))
+            shadowVerticalOffset: Theme.isMinimal ? 4 : (Theme.isFuture ? 8 : Theme.shadowOffsetMd)
+            shadowHorizontalOffset: 0
+            autoPaddingEnabled: true // Allows shadow to bleed outside without manual negative margins
+        }
 
-        // Gradient background for Holo or Gradient buttons
-        Rectangle {
+        // Clip only internal animations, not the shadow
+        Item {
             anchors.fill: parent
-            radius: parent.radius
-            visible: root.isGradient || (Theme.isFuture && !root.isGradient)
-            gradient: Gradient {
-                orientation: Gradient.Horizontal
-                GradientStop { position: 0.0; color: Theme.isFuture ? Theme.futureViolet : Theme.ctaStart }
-                GradientStop { position: 0.5; color: Theme.isFuture ? Theme.futureMagenta : (root.isGradient ? Theme.ctaStart : Theme.ctaEnd) }
-                GradientStop { position: 1.0; color: Theme.isFuture ? Theme.futureCyan : Theme.ctaEnd }
+            clip: true
+            
+            // Re-wrap contents that need clipping
+            Rectangle {
+                anchors.fill: parent
+                radius: body.radius
+                visible: root.isGradient || (Theme.isFuture && !root.isGradient)
+                gradient: Gradient {
+                    orientation: Gradient.Horizontal
+                    GradientStop { position: 0.0; color: Theme.isFuture ? Theme.futureViolet : Theme.ctaStart }
+                    GradientStop { position: 0.5; color: Theme.isFuture ? Theme.futureMagenta : (root.isGradient ? Theme.ctaStart : Theme.ctaEnd) }
+                    GradientStop { position: 1.0; color: Theme.isFuture ? Theme.futureCyan : Theme.ctaEnd }
+                }
+            }
+
+            Rectangle {
+                anchors.fill: parent
+                radius: body.radius
+                visible: Theme.isFuture
+                opacity: 0.4
+                gradient: Gradient {
+                    orientation: Gradient.Vertical
+                    GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0.6) }
+                    GradientStop { position: 0.2; color: "transparent" }
+                    GradientStop { position: 1.0; color: Qt.rgba(1, 1, 1, 0.2) }
+                }
+            }
+
+            Rectangle {
+                id: liquidWave
+                width: parent.width * 2
+                height: parent.height
+                x: -parent.width
+                visible: Theme.isFuture
+                opacity: 0.3
+                gradient: Gradient {
+                    orientation: Gradient.Horizontal
+                    GradientStop { position: 0.0; color: "transparent" }
+                    GradientStop { position: 0.5; color: "white" }
+                    GradientStop { position: 1.0; color: "transparent" }
+                }
+                NumberAnimation on x {
+                    running: Theme.isFuture
+                    from: -root.width * 2; to: root.width * 2; duration: 3000; loops: Animation.Infinite
+                }
             }
         }
 
-        // Animated chrome/liquid highlight for Future
-        Rectangle {
-            anchors.fill: parent
-            radius: parent.radius
-            visible: Theme.isFuture
-            opacity: 0.4
-            gradient: Gradient {
-                orientation: Gradient.Vertical
-                GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0.6) }
-                GradientStop { position: 0.2; color: "transparent" }
-                GradientStop { position: 0.5; color: "transparent" }
-                GradientStop { position: 0.8; color: "transparent" }
-                GradientStop { position: 1.0; color: Qt.rgba(1, 1, 1, 0.2) }
-            }
-        }
-
-        Rectangle {
-            id: liquidWave
-            width: parent.width * 2
-            height: parent.height
-            x: -parent.width
-            visible: Theme.isFuture
-            opacity: 0.3
-            gradient: Gradient {
-                orientation: Gradient.Horizontal
-                GradientStop { position: 0.0; color: "transparent" }
-                GradientStop { position: 0.5; color: "white" }
-                GradientStop { position: 1.0; color: "transparent" }
-            }
-            NumberAnimation on x {
-                running: Theme.isFuture
-                from: -root.width * 2; to: root.width * 2; duration: 3000; loops: Animation.Infinite
-            }
-        }
-
-        // Top highlight
         Rectangle {
             anchors.top: parent.top
             anchors.left: parent.left
@@ -102,19 +113,6 @@ Item {
             opacity: 0
             Behavior on opacity { NumberAnimation { duration: 200 } }
         }
-    }
-
-    MultiEffect {
-        source: body
-        anchors.fill: body
-        anchors.margins: Theme.isFuture ? -32 : 0 // Prevents glow clipping
-        enabled: Theme.enableEffects && (root.isGradient || Theme.isMinimal || Theme.isFuture)
-        visible: enabled
-        shadowEnabled: true
-        shadowBlur: Theme.isMinimal ? 0.4 : (Theme.isFuture ? 0.8 : Theme.shadowBlurSoft)
-        shadowColor: Theme.isFuture ? Qt.rgba(255/255, 0/255, 229/255, 0.6) : (root.isGradient ? Qt.rgba(0.55, 0.44, 0.98, 0.4) : Qt.rgba(0, 0, 0, 0.3))
-        shadowVerticalOffset: Theme.isMinimal ? 4 : (Theme.isFuture ? 8 : Theme.shadowOffsetMd)
-        shadowHorizontalOffset: 0
     }
 
     MouseArea {

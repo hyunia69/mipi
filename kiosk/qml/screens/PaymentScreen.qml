@@ -29,6 +29,7 @@ Item {
         height: contentColumn.height + Theme.spacingXL * 2
         anchors.centerIn: parent
         radius: Theme.panelRadius
+        clip: false // Important: Allow glows to spill outside the panel if needed
 
         Column {
             id: contentColumn
@@ -36,7 +37,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             anchors.topMargin: Theme.spacingXL
-            spacing: Theme.spacingMD
+            spacing: Theme.isFuture ? Theme.spacingLG : Theme.spacingMD
 
             // Title
             Text {
@@ -199,6 +200,8 @@ Item {
                 width: parent.width
                 text: "CANCEL"
                 fontSize: Theme.fontBody
+                // In future theme, make secondary button less prominent if needed
+                isGradient: false 
                 onClicked: root.cancelled()
             }
         }

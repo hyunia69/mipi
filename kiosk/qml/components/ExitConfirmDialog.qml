@@ -28,8 +28,8 @@ Item {
     Item {
         id: dialogHost
         anchors.centerIn: parent
-        width: 560
-        height: 300
+        width: Theme.isFuture ? 640 : 560
+        height: Theme.isFuture ? 360 : 320
         opacity: root.open ? 1 : 0
         scale: root.open ? 1.0 : 0.94
         Behavior on opacity { NumberAnimation { duration: Theme.animNormal; easing.type: Easing.OutCubic } }
@@ -38,12 +38,11 @@ Item {
         Rectangle {
             id: shadowBacker
             anchors.fill: body
-            anchors.topMargin: 10
-            anchors.leftMargin: -2
-            anchors.rightMargin: -2
-            anchors.bottomMargin: -8
-            color: Qt.rgba(0, 0, 0, 0.45)
-            radius: Theme.panelRadius + 4
+            anchors.margins: -6
+            anchors.topMargin: Theme.isFuture ? -4 : 10
+            color: Qt.rgba(0, 0, 0, Theme.isFuture ? 0.3 : 0.45)
+            radius: Theme.panelRadius + 6
+            visible: !Theme.isFuture
             z: -1
         }
 
@@ -99,10 +98,10 @@ Item {
 
                 Row {
                     anchors.right: parent.right
-                    spacing: Theme.spacingSM
+                    spacing: Theme.isFuture ? Theme.spacingLG : Theme.spacingSM
 
                     TouchButton {
-                        width: 200; height: 56
+                        width: Theme.isFuture ? 220 : 200; height: 56
                         text: "CONTINUE"
                         fontSize: Theme.fontCaption
                         isGradient: false
@@ -110,7 +109,7 @@ Item {
                     }
 
                     TouchButton {
-                        width: 200; height: 56
+                        width: Theme.isFuture ? 220 : 200; height: 56
                         text: "END NOW"
                         fontSize: Theme.fontCaption
                         isGradient: false

@@ -22,28 +22,41 @@ Item {
         radius: Theme.cardRadius
         color: Theme.surfaceColor
         border.color: mouseArea.containsMouse
-            ? Qt.rgba(0.13, 0.83, 0.93, 0.55)
+            ? (Theme.isFuture ? Theme.futureCyan : Qt.rgba(0.13, 0.83, 0.93, 0.55))
             : Theme.glassBorder
         border.width: 1
-        clip: true
-        layer.enabled: Theme.enableEffects && mouseArea.containsMouse
 
-        Rectangle {
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: 1
-            radius: parent.radius
-            color: Qt.rgba(1, 1, 1, 0.08)
+        layer.enabled: Theme.enableEffects && mouseArea.containsMouse
+        layer.effect: MultiEffect {
+            shadowEnabled: true
+            shadowBlur: Theme.shadowBlurSoft
+            shadowColor: Theme.isFuture ? Qt.rgba(168/255, 85/255, 247/255, 0.4) : Qt.rgba(0.55, 0.44, 0.98, 0.5)
+            shadowVerticalOffset: Theme.shadowOffsetMd
+            shadowHorizontalOffset: 0
+            autoPaddingEnabled: true
         }
 
-        Rectangle {
+        Item {
             anchors.fill: parent
-            radius: parent.radius
-            gradient: Gradient {
-                orientation: Gradient.Horizontal
-                GradientStop { position: 0.0; color: Qt.rgba(0.55, 0.44, 0.98, 0.10) }
-                GradientStop { position: 0.6; color: "transparent" }
+            clip: true
+            
+            Rectangle {
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
+                height: 1
+                radius: parent.radius
+                color: Qt.rgba(1, 1, 1, 0.08)
+            }
+
+            Rectangle {
+                anchors.fill: parent
+                radius: parent.radius
+                gradient: Gradient {
+                    orientation: Gradient.Horizontal
+                    GradientStop { position: 0.0; color: Qt.rgba(0.55, 0.44, 0.98, 0.10) }
+                    GradientStop { position: 0.6; color: "transparent" }
+                }
             }
         }
 
@@ -113,25 +126,12 @@ Item {
             SequentialAnimation on x {
                 running: Theme.enableEffects && root.active
                 loops: Animation.Infinite
-                NumberAnimation { to: chevronHost.x + 6; duration: 900; easing.type: Easing.InOutSine }
-                NumberAnimation { to: chevronHost.x; duration: 900; easing.type: Easing.InOutSine }
+                NumberAnimation { from: 0; to: 6; duration: 900; easing.type: Easing.InOutSine }
+                NumberAnimation { from: 6; to: 0; duration: 900; easing.type: Easing.InOutSine }
             }
         }
 
         Behavior on border.color { ColorAnimation { duration: Theme.animNormal } }
-    }
-
-    MultiEffect {
-        source: body
-        anchors.fill: body
-        anchors.margins: -32 // Prevents shadow clipping
-        enabled: Theme.enableEffects && mouseArea.containsMouse
-        visible: enabled
-        shadowEnabled: true
-        shadowBlur: Theme.shadowBlurSoft
-        shadowColor: Qt.rgba(0.55, 0.44, 0.98, 0.5)
-        shadowVerticalOffset: Theme.shadowOffsetMd
-        shadowHorizontalOffset: 0
     }
 
     MouseArea {

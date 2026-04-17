@@ -125,13 +125,18 @@ Item {
             boundsBehavior: Flickable.StopAtBounds
             interactive: true
 
-            model: ListModel {
-                ListElement { key: "namsan";    name: "Namsan Tower";      dist: "2.3km"; dir: "NE"; clr: "#1B4332" }
-                ListElement { key: "lotte";     name: "Lotte World Tower"; dist: "8.1km"; dir: "E";  clr: "#14213D" }
-                ListElement { key: "hangang";   name: "Hangang Bridge";    dist: "1.5km"; dir: "S";  clr: "#023E8A" }
-                ListElement { key: "gyeongbok"; name: "Gyeongbokgung";     dist: "4.2km"; dir: "N";  clr: "#3D405B" }
-                ListElement { key: "sixty3";    name: "63 Building";       dist: "5.7km"; dir: "SW"; clr: "#1A1A2E" }
-                ListElement { key: "bukhan";    name: "Bukhansan";         dist: "9.3km"; dir: "N";  clr: "#264653" }
+            model: ListModel { id: landmarkModel }
+            Component.onCompleted: {
+                for (var i = 0; i < LandmarkData.items.length; i++) {
+                    var item = LandmarkData.items[i];
+                    landmarkModel.append({
+                        key: item.key,
+                        name: item.name,
+                        dist: item.distance,
+                        dir: item.direction,
+                        clr: item.thumbColor
+                    });
+                }
             }
 
             delegate: LocationCard {
