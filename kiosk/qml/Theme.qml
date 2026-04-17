@@ -30,7 +30,11 @@ QtObject {
 
     // === Typography ===
     property string fontFamily: "Pretendard"
-    function init(primary) { if (primary && primary.length > 0) fontFamily = primary }
+    property string assetsUrl: ""
+    function init(primary, assets) {
+        if (primary && primary.length > 0) fontFamily = primary;
+        if (assets && assets.length > 0) assetsUrl = assets;
+    }
     readonly property int fontHero: 64
     readonly property int fontDisplay: 48
     readonly property int fontTitle: 32

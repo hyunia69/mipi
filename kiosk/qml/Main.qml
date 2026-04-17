@@ -12,7 +12,10 @@ ApplicationWindow {
     title: "Digital Telescope Kiosk"
     color: Theme.backgroundColor
 
-    Component.onCompleted: Theme.init(typeof PRIMARY_FONT !== "undefined" ? PRIMARY_FONT : "")
+    Component.onCompleted: Theme.init(
+        typeof PRIMARY_FONT !== "undefined" ? PRIMARY_FONT : "",
+        typeof ASSETS_URL !== "undefined" ? ASSETS_URL : ""
+    )
 
     StackView {
         id: nav
@@ -59,6 +62,15 @@ ApplicationWindow {
         id: homeComp
         HomeScreen {
             onStartViewing: nav.push(paymentComp)
+            onLandmarkSelected: (key) => nav.push(detailComp, { landmarkKey: key })
+        }
+    }
+
+    Component {
+        id: detailComp
+        LandmarkDetailScreen {
+            onBackRequested: nav.pop()
+            onViewRequested: nav.replace(paymentComp)
         }
     }
 

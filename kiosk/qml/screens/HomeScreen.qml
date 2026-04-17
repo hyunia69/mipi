@@ -6,6 +6,7 @@ Item {
     id: root
 
     signal startViewing()
+    signal landmarkSelected(string key)
 
     ImageSlideshow {
         anchors.fill: parent
@@ -90,11 +91,14 @@ Item {
 
             delegate: LocationCard {
                 id: card
+                property string landmarkKey: model.key
                 name: model.name
                 distance: model.dist
                 direction: model.dir
                 thumbColor: model.clr
-                thumbSource: (typeof ASSETS_URL !== "undefined" ? ASSETS_URL : "") + "/landmarks/" + model.key + "/thumb.jpg"
+                thumbSource: Theme.assetsUrl.length > 0
+                    ? Theme.assetsUrl + "/landmarks/" + model.key + "/thumb.jpg"
+                    : ""
 
                 opacity: 0
                 transform: Translate { id: cardShift; x: -36 }
@@ -107,15 +111,17 @@ Item {
                         NumberAnimation { target: cardShift; property: "x";       to: 0;            duration: 500; easing.type: Easing.OutCubic }
                     }
                 }
+
+                onClicked: root.landmarkSelected(card.landmarkKey)
             }
         }
 
-        TouchButton {
+        HeroCTA {
             width: parent.width
-            height: 88
-            text: "START   VIEWING"
-            fontSize: Theme.fontHeading
-            isGradient: true
+            primary: "START VIEWING"
+            caption: "1,000 KRW · 3 MIN · Live 40x Optical Zoom"
+            leadingIcon: "telescope"
+            trailingIcon: "chevron-right"
             onClicked: root.startViewing()
         }
 
