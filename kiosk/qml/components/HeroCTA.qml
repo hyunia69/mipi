@@ -45,13 +45,13 @@ Item {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 height: 1
-                radius: parent.radius
+                radius: body.radius
                 color: Qt.rgba(1, 1, 1, 0.08)
             }
 
             Rectangle {
                 anchors.fill: parent
-                radius: parent.radius
+                radius: body.radius
                 gradient: Gradient {
                     orientation: Gradient.Horizontal
                     GradientStop { position: 0.0; color: Qt.rgba(0.55, 0.44, 0.98, 0.10) }
