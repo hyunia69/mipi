@@ -1,13 +1,41 @@
+import os
 import sys
 import argparse
 from pathlib import Path
 
-from PySide6.QtCore import QUrl
-from PySide6.QtGui import QFontDatabase, QGuiApplication
-from PySide6.QtQml import QQmlApplicationEngine
-
 
 FONT_PREFERENCES = ("Pretendard", "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo")
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Digital Telescope Kiosk")
+    parser.add_argument("--theme", choices=["holo", "minimal", "future"], default="holo", help="UI Theme Style")
+    parser.add_argument("--mode", choices=["demo", "live"], default="demo",
+                        help="demo=기존 슬라이드쇼, live=실제 카메라 영상")
+    parser.add_argument("--camera-device", default="/dev/video0", help="V4L2 device path")
+    parser.add_argument("--camera-backend", choices=["qt", "gstreamer"], default="qt",
+                        help="qt=FFmpeg/Qt 기본 백엔드, gstreamer=Qt Multimedia GStreamer 백엔드")
+    parser.add_argument("--camera-size", default="1920x1080", help="WxH (e.g. 1920x1080)")
+    parser.add_argument("--camera-fps", type=int, default=60)
+    args, _ = parser.parse_known_args()
+    try:
+        w, h = (int(x) for x in args.camera_size.lower().split("x"))
+    except (ValueError, AttributeError):
+        w, h = 1920, 1080
+    args.camera_width = w
+    args.camera_height = h
+    return args
+
+
+# Args must be parsed before any Qt Multimedia import so QT_MEDIA_BACKEND can take effect
+_ARGS = parse_args()
+if _ARGS.mode == "live" and _ARGS.camera_backend == "gstreamer":
+    os.environ["QT_MEDIA_BACKEND"] = "gstreamer"
+
+
+from PySide6.QtCore import QUrl  # noqa: E402
+from PySide6.QtGui import QFontDatabase, QGuiApplication  # noqa: E402
+from PySide6.QtQml import QQmlApplicationEngine  # noqa: E402
 
 
 def load_application_fonts(font_dir: Path) -> list[str]:
@@ -36,9 +64,7 @@ def resolve_primary_font(loaded_families: list[str]) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Digital Telescope Kiosk")
-    parser.add_argument("--theme", choices=["holo", "minimal", "future"], default="holo", help="UI Theme Style")
-    args, _ = parser.parse_known_args()
+    args = _ARGS
 
     app = QGuiApplication(sys.argv)
     app.setApplicationName("Digital Telescope Kiosk")
@@ -51,6 +77,9 @@ def main() -> int:
     primary_font = resolve_primary_font(loaded)
     print(f"[fonts] Loaded: {loaded or '(none)'}  |  Primary: {primary_font}")
     print(f"[theme] Active Style: {args.theme}")
+    print(f"[mode]  {args.mode}  "
+          f"(camera={args.camera_device}  backend={args.camera_backend}  "
+          f"{args.camera_width}x{args.camera_height}@{args.camera_fps})")
 
     engine = QQmlApplicationEngine()
 
@@ -58,6 +87,12 @@ def main() -> int:
     ctx.setContextProperty("ASSETS_URL", QUrl.fromLocalFile(str(assets_dir)).toString())
     ctx.setContextProperty("PRIMARY_FONT", primary_font)
     ctx.setContextProperty("appTheme", args.theme)
+    ctx.setContextProperty("appMode", args.mode)
+    ctx.setContextProperty("cameraDevicePath", args.camera_device)
+    ctx.setContextProperty("cameraBackend", args.camera_backend)
+    ctx.setContextProperty("cameraWidth", args.camera_width)
+    ctx.setContextProperty("cameraHeight", args.camera_height)
+    ctx.setContextProperty("cameraFps", args.camera_fps)
 
     qml_dir = base_dir / "qml"
     engine.addImportPath(str(qml_dir))

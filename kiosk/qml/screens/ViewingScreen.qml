@@ -7,6 +7,8 @@ Item {
     id: root
     signal sessionEnded()
 
+    readonly property bool isLive: typeof appMode !== "undefined" && appMode === "live"
+
     property int currentView: 0
     property int viewInterval: 18000
 
@@ -63,42 +65,78 @@ Item {
     // ===== Background fallback =====
     Rectangle { anchors.fill: parent; color: Theme.backgroundColor }
 
-    // ===== Pan simulation: crossfading real photographs =====
-    Repeater {
-        model: root.views.length
+    // ===== Background Loader: demo slideshow vs live camera =====
+    Loader {
+        id: bgLoader
+        anchors.fill: parent
+        z: 0
+        sourceComponent: root.isLive ? liveBgComp : demoBgComp
+    }
+
+    // --- Demo: crossfading real photographs (Ken Burns pan) ---
+    Component {
+        id: demoBgComp
 
         Item {
             anchors.fill: parent
-            opacity: index === root.currentView ? 1.0 : 0.0
-            Behavior on opacity { NumberAnimation { duration: 1400; easing.type: Easing.InOutQuad } }
 
-            Image {
-                id: bgImage
-                anchors.fill: parent
-                source: Theme.assetsUrl.length > 0
-                    ? Theme.assetsUrl + "/" + root.views[index].image
-                    : ""
-                asynchronous: true
-                cache: true
-                fillMode: Image.PreserveAspectCrop
-                sourceSize.width: 1920
-                sourceSize.height: 1080
-                transformOrigin: Item.Center
+            Repeater {
+                model: root.views.length
 
-                SequentialAnimation on scale {
-                    running: bgImage.status === Image.Ready && index === root.currentView
-                    loops: Animation.Infinite
-                    NumberAnimation { from: 1.00; to: 1.04; duration: 16000; easing.type: Easing.InOutSine }
-                    NumberAnimation { from: 1.04; to: 1.00; duration: 16000; easing.type: Easing.InOutSine }
+                Item {
+                    anchors.fill: parent
+                    opacity: index === root.currentView ? 1.0 : 0.0
+                    Behavior on opacity { NumberAnimation { duration: 1400; easing.type: Easing.InOutQuad } }
+
+                    Image {
+                        id: bgImage
+                        anchors.fill: parent
+                        source: Theme.assetsUrl.length > 0
+                            ? Theme.assetsUrl + "/" + root.views[index].image
+                            : ""
+                        asynchronous: true
+                        cache: true
+                        fillMode: Image.PreserveAspectCrop
+                        sourceSize.width: 1920
+                        sourceSize.height: 1080
+                        transformOrigin: Item.Center
+
+                        SequentialAnimation on scale {
+                            running: bgImage.status === Image.Ready && index === root.currentView
+                            loops: Animation.Infinite
+                            NumberAnimation { from: 1.00; to: 1.04; duration: 16000; easing.type: Easing.InOutSine }
+                            NumberAnimation { from: 1.04; to: 1.00; duration: 16000; easing.type: Easing.InOutSine }
+                        }
+
+                        SequentialAnimation on x {
+                            running: bgImage.status === Image.Ready && index === root.currentView
+                            loops: Animation.Infinite
+                            NumberAnimation { from: 0; to: -24; duration: 16000; easing.type: Easing.InOutSine }
+                            NumberAnimation { from: -24; to: 0; duration: 16000; easing.type: Easing.InOutSine }
+                        }
+                    }
                 }
+            }
+        }
+    }
 
-                // Subtle horizontal pan drift when active (camera-like)
-                SequentialAnimation on x {
-                    running: bgImage.status === Image.Ready && index === root.currentView
-                    loops: Animation.Infinite
-                    NumberAnimation { from: 0; to: -24; duration: 16000; easing.type: Easing.InOutSine }
-                    NumberAnimation { from: -24; to: 0; duration: 16000; easing.type: Easing.InOutSine }
-                }
+    // --- Live: real camera feed ---
+    Component {
+        id: liveBgComp
+
+        CameraView {
+            id: cameraView
+            anchors.fill: parent
+            fillMode: VideoOutput.PreserveAspectCrop
+            onSignalLost: (reason) => {
+                liveStatus.message = "Camera signal lost — " + reason
+                liveStatus.isError = true
+                liveStatus.visible = true
+            }
+            onSignalRestored: {
+                liveStatus.message = ""
+                liveStatus.isError = false
+                liveStatus.visible = false
             }
         }
     }
@@ -106,6 +144,7 @@ Item {
     // ===== Vignette over background =====
     Rectangle {
         anchors.fill: parent
+        z: 1
         gradient: Gradient {
             GradientStop { position: 0.00; color: Qt.rgba(0, 0, 0, 0.22) }
             GradientStop { position: 0.45; color: "transparent" }
@@ -113,15 +152,15 @@ Item {
         }
     }
 
-    // ===== View transition timer (pauses while info panel is open) =====
+    // ===== View transition timer (demo only; pauses while info panel is open) =====
     Timer {
         interval: root.viewInterval
-        running: !infoPanel.isOpen && !exitDialog.open
+        running: !root.isLive && !infoPanel.isOpen && !exitDialog.open
         repeat: true
         onTriggered: root.currentView = (root.currentView + 1) % root.views.length
     }
 
-    // ===== View indicator (top center) =====
+    // ===== View indicator (top center) — demo only =====
     Row {
         id: viewIndicator
         anchors.top: parent.top
@@ -129,6 +168,7 @@ Item {
         anchors.topMargin: Theme.spacingLG
         spacing: 14
         z: 15
+        visible: !root.isLive
 
         Icon {
             name: "navigation"
@@ -166,6 +206,36 @@ Item {
                     Behavior on color { ColorAnimation { duration: 400 } }
                 }
             }
+        }
+    }
+
+    // ===== Live mode status line (top center) =====
+    Row {
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.topMargin: Theme.spacingLG
+        spacing: 12
+        z: 15
+        visible: root.isLive
+
+        Icon {
+            name: "navigation"
+            color: Theme.holoTeal
+            size: 14
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Text {
+            text: "LIVE CAMERA  ·  " + (typeof cameraWidth !== "undefined" ? cameraWidth : 1920)
+                  + "×" + (typeof cameraHeight !== "undefined" ? cameraHeight : 1080)
+                  + "  ·  " + (typeof cameraFps !== "undefined" ? cameraFps : 60) + " fps"
+                  + "  ·  " + (typeof cameraBackend !== "undefined" ? cameraBackend.toUpperCase() : "QT")
+            color: Theme.textSecondary
+            font.family: Theme.fontFamily
+            font.pixelSize: Theme.fontSmall
+            font.letterSpacing: 3
+            font.weight: Font.DemiBold
+            anchors.verticalCenter: parent.verticalCenter
         }
     }
 
@@ -222,9 +292,9 @@ Item {
         }
     }
 
-    // ===== AI Detection overlays — per-view, crossfade synchronised =====
+    // ===== AI Detection overlays — demo only =====
     Repeater {
-        model: root.views.length
+        model: root.isLive ? 0 : root.views.length
 
         Item {
             anchors.fill: parent
@@ -350,12 +420,43 @@ Item {
         }
 
         Text {
-            text: "LIVE  40x"
+            text: root.isLive ? "LIVE" : "LIVE  40x"
             color: Theme.textSecondary
             font.family: Theme.fontFamily
             font.pixelSize: Theme.fontSmall
             font.letterSpacing: 2
             anchors.verticalCenter: parent.verticalCenter
+        }
+    }
+
+    // ===== Camera error banner (live mode only) =====
+    Rectangle {
+        id: liveStatus
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.topMargin: Theme.spacingLG * 2 + 28
+        width: Math.min(parent.width - 2 * Theme.spacingLG, statusLabel.width + 48)
+        height: 44
+        radius: 22
+        color: Qt.rgba(0, 0, 0, 0.80)
+        border.color: Qt.rgba(239/255, 68/255, 68/255, 0.55)
+        border.width: 1
+        visible: false
+        z: 50
+        opacity: visible ? 1 : 0
+        Behavior on opacity { NumberAnimation { duration: Theme.animFast } }
+
+        property string message: ""
+        property bool isError: false
+
+        Text {
+            id: statusLabel
+            anchors.centerIn: parent
+            text: liveStatus.message
+            color: liveStatus.isError ? Theme.errorColor : Theme.textSecondary
+            font.family: Theme.fontFamily
+            font.pixelSize: Theme.fontCaption
+            font.weight: Font.DemiBold
         }
     }
 
