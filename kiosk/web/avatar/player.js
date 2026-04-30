@@ -36,9 +36,10 @@ export class Player {
 
     const w = this.canvas.clientWidth || 400;
     const h = this.canvas.clientHeight || 500;
-    this.camera = new THREE.PerspectiveCamera(35, w / h, 0.1, 100);
-    this.camera.position.set(0, 1.4, 2.4);
-    this.camera.lookAt(0, 1.3, 0);
+    this.camera = new THREE.PerspectiveCamera(45, w / h, 0.01, 100);
+    // Initial position; _fitCameraToAvatar will refine based on the loaded GLB's bbox.
+    this.camera.position.set(0, 0.85, 3.06);
+    this.camera.lookAt(0, 0.77, 0);
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
@@ -123,6 +124,26 @@ export class Player {
     this.avatarRoot = gltf.scene;
     this.scene.add(this.avatarRoot);
     this.mixer = new THREE.AnimationMixer(this.avatarRoot);
+    this._fitCameraToAvatar();
+  }
+
+  _fitCameraToAvatar() {
+    if (!this.avatarRoot || !this.camera) return;
+    // Bbox-based framing (mirrors sls_brazil_player/players/sentence/index.html:991).
+    // Recenter model so its feet sit at y=0, then place camera at 1.8x model height
+    // away on z, half-height up, looking at ~45% of model height (chest level).
+    const box = new THREE.Box3().setFromObject(this.avatarRoot);
+    const center = box.getCenter(new THREE.Vector3());
+    const size = box.getSize(new THREE.Vector3());
+    this.avatarRoot.position.sub(new THREE.Vector3(center.x, box.min.y, center.z));
+    // Frame the "signing space" — upper-thigh up to just above head, full
+    // arm-span horizontally. Legs cropped (no meaning in Libras), hands
+    // at any height visible. Distance ~1.0x model height in a 4:5 portrait
+    // canvas yields ~3x apparent size vs. full-body framing.
+    const targetY = size.y * 0.55;
+    this.camera.position.set(0, size.y * 0.55, size.y * 1.4);
+    this.camera.lookAt(0, targetY, 0);
+    this.camera.updateProjectionMatrix();
   }
 
   _onResize() {

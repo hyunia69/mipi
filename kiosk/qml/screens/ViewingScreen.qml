@@ -537,8 +537,8 @@ Item {
         visible: (typeof AVATAR_ENABLED !== "undefined" ? AVATAR_ENABLED : false)
         gloss: "CASA"
         repeatIntervalMs: typeof AVATAR_REPEAT_MS !== "undefined" ? AVATAR_REPEAT_MS : 8000
-        width: 280
-        height: 360
+        width: 384
+        height: 480
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.rightMargin: 140    // clears ZoomControls (60px wide + ~24px margin + ~56px buffer)
