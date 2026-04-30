@@ -226,3 +226,11 @@ def test_playgloss_interrupt_rejects_previous(view):
     assert result.startswith("rejected:") and "interrupted by:" in result, (
         f"expected interrupt rejection, got: {result!r}"
     )
+
+
+def test_bridge_module_loads_without_qt(view):
+    """In headless QWebEngineView (no QWebChannel), bridge should still resolve."""
+    _wait_until(view, "window.__player && window.__player.ready === true")
+    # connectBridge is called by index.html; without qt.webChannelTransport in this
+    # plain-browser-style fixture, the bridge should fall through and set __bridgeReady.
+    _wait_until(view, "window.__bridgeReady === true", timeout_ms=8000)
