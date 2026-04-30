@@ -21,4 +21,3 @@ Thumbs.db
 # Avatar build artifacts
 web/avatar/assets/*
 !web/avatar/assets/.gitkeep
-web/avatar/vendor/
