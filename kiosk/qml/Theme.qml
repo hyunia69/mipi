@@ -3,7 +3,9 @@ import QtQuick
 
 QtObject {
     // === Theme Engine Control ===
-    property string activeStyle: typeof appTheme !== "undefined" ? appTheme : "holo"
+    // NOTE: Singletons don't see rootContext properties, so the theme must be
+    // injected via Theme.init() from Main.qml.
+    property string activeStyle: "holo"
     readonly property bool isMinimal: activeStyle === "minimal"
     readonly property bool isFuture: activeStyle === "future"
     readonly property bool isHolo: activeStyle === "holo"
@@ -43,9 +45,10 @@ QtObject {
     // === Typography ===
     property string fontFamily: "Pretendard"
     property string assetsUrl: ""
-    function init(primary, assets) {
+    function init(primary, assets, theme) {
         if (primary && primary.length > 0) fontFamily = primary;
         if (assets && assets.length > 0) assetsUrl = assets;
+        if (theme && theme.length > 0) activeStyle = theme;
     }
     readonly property int fontHero: 64
     readonly property int fontDisplay: 48

@@ -15,7 +15,8 @@ ApplicationWindow {
 
     Component.onCompleted: Theme.init(
         typeof PRIMARY_FONT !== "undefined" ? PRIMARY_FONT : "",
-        typeof ASSETS_URL !== "undefined" ? ASSETS_URL : ""
+        typeof ASSETS_URL !== "undefined" ? ASSETS_URL : "",
+        typeof appTheme !== "undefined" ? appTheme : ""
     )
 
     StackView {
