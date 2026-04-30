@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Kiosk Avatar</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./vendor/three.module.min.js"
+        }
+      }
+    </script>
+    <style>
+      html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: transparent; }
+      #stage { position: absolute; inset: 0; }
+      #status { position: absolute; bottom: 4px; left: 4px; font: 10px/1.2 monospace;
+                color: rgba(255,255,255,0.4); pointer-events: none; }
+    </style>
+  </head>
+  <body>
+    <canvas id="stage"></canvas>
+    <div id="status"></div>
+    <script src="./vendor/qwebchannel.js"></script>
+    <script type="module">
+      import { Player } from "./player.js";
+      import { connectBridge } from "./bridge.js";
+
+      const canvas = document.getElementById("stage");
+      const status = document.getElementById("status");
+      const player = new Player(canvas, { onStatus: (s) => (status.textContent = s) });
+
+      // Optional URL hash override for manual testing: index.html#gloss=CASA
+      const hash = new URLSearchParams(location.hash.slice(1));
+      const initialGloss = hash.get("gloss");
+
+      player.init().then(async () => {
+        await connectBridge(player);
+        if (initialGloss) player.playGloss(initialGloss);
+      }).catch((err) => {
+        status.textContent = "init failed: " + err.message;
+      });
+    </script>
+  </body>
+</html>
