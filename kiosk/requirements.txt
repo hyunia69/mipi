@@ -3,5 +3,3 @@ PySide6-Addons>=6.5
 Pillow>=10.0
 requests>=2.31
 python-dotenv>=1.0
-pytest>=7.4
-pytest-qt>=4.2
