@@ -186,6 +186,20 @@ Item {
         }
     }
 
+    AvatarWidget {
+        id: homeAvatar
+        visible: typeof AVATAR_ENABLED !== "undefined" ? AVATAR_ENABLED : false
+        gloss: "CASA"
+        repeatIntervalMs: typeof AVATAR_REPEAT_MS !== "undefined" ? AVATAR_REPEAT_MS : 8000
+        width: 280
+        height: 360
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.rightMargin: 32
+        anchors.bottomMargin: 32
+        z: 20
+    }
+
     opacity: 0
     Component.onCompleted: fadeIn.start()
     NumberAnimation {
