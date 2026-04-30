@@ -347,6 +347,15 @@ Item {
         anchors.rightMargin: Theme.spacingLG + (infoPanel.isOpen ? infoPanel.width + Theme.spacingSM : 0)
         z: 20
 
+        readonly property bool zoomReady: typeof cameraController !== "undefined"
+            && cameraController !== null
+            && cameraController.enabled
+
+        onZoomInPressed: if (zoomReady) cameraController.startZoomIn()
+        onZoomInReleased: if (zoomReady) cameraController.stopZoom()
+        onZoomOutPressed: if (zoomReady) cameraController.startZoomOut()
+        onZoomOutReleased: if (zoomReady) cameraController.stopZoom()
+
         Behavior on anchors.rightMargin {
             NumberAnimation { duration: Theme.animNormal; easing.type: Easing.OutCubic }
         }

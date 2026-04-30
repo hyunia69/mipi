@@ -37,6 +37,8 @@ from PySide6.QtCore import QUrl  # noqa: E402
 from PySide6.QtGui import QFontDatabase, QGuiApplication  # noqa: E402
 from PySide6.QtQml import QQmlApplicationEngine  # noqa: E402
 
+from camera_control import CameraController  # noqa: E402
+
 
 def load_application_fonts(font_dir: Path) -> list[str]:
     loaded_families: list[str] = []
@@ -83,6 +85,9 @@ def main() -> int:
 
     engine = QQmlApplicationEngine()
 
+    camera_controller = CameraController(args.mode, parent=app)
+    app.aboutToQuit.connect(camera_controller.close)
+
     ctx = engine.rootContext()
     ctx.setContextProperty("ASSETS_URL", QUrl.fromLocalFile(str(assets_dir)).toString())
     ctx.setContextProperty("PRIMARY_FONT", primary_font)
@@ -93,6 +98,7 @@ def main() -> int:
     ctx.setContextProperty("cameraWidth", args.camera_width)
     ctx.setContextProperty("cameraHeight", args.camera_height)
     ctx.setContextProperty("cameraFps", args.camera_fps)
+    ctx.setContextProperty("cameraController", camera_controller)
 
     qml_dir = base_dir / "qml"
     engine.addImportPath(str(qml_dir))
