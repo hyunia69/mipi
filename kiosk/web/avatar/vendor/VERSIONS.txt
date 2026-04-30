@@ -1,0 +1,26 @@
+# Vendored third-party JS for kiosk avatar widget
+# Update this file whenever you upgrade or replace any vendored asset.
+
+three.module.min.js
+  version: three@0.170.0
+  license: MIT
+  source:  https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js
+
+GLTFLoader.js
+  version: three@0.170.0
+  license: MIT
+  source:  https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js
+  notes:   imports `from 'three'` (handled via import map in index.html)
+           imports `from '../utils/BufferGeometryUtils.js'` (see below)
+
+utils/BufferGeometryUtils.js
+  version: three@0.170.0
+  license: MIT
+  source:  https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/utils/BufferGeometryUtils.js
+  notes:   transitive dep of GLTFLoader.js; imports `from 'three'`
+
+qwebchannel.js
+  version: Qt 6.x (extracted from raw.githubusercontent.com/qt/qtwebchannel/dev)
+  license: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+  source:  https://raw.githubusercontent.com/qt/qtwebchannel/dev/src/webchannel/qwebchannel.js
+  notes:   provides `window.QWebChannel`; loaded via classic <script> tag (not ES module)
