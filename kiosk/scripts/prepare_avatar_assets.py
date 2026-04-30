@@ -52,9 +52,19 @@ def copy_bundles(source: Path, dest: Path, *, glosses: list[str]) -> list[Path]:
         print(f"[prepare_avatar_assets] ERROR: bundles dir not found: {bundles_src}", file=sys.stderr)
         raise SystemExit(2)
     bundles_dst = dest / "bundles"
-    bundles_dst.mkdir(parents=True, exist_ok=True)
+    if bundles_dst.exists():
+        shutil.rmtree(bundles_dst)
+    bundles_dst.mkdir(parents=True)
 
-    full_index = json.loads((bundles_src / "index.json").read_text(encoding="utf-8"))
+    bundles_index_path = bundles_src / "index.json"
+    try:
+        full_index = json.loads(bundles_index_path.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        print(f"[prepare_avatar_assets] ERROR: bundles index not found: {bundles_index_path}", file=sys.stderr)
+        raise SystemExit(2)
+    except json.JSONDecodeError as e:
+        print(f"[prepare_avatar_assets] ERROR: bundles index is not valid JSON: {bundles_index_path}: {e}", file=sys.stderr)
+        raise SystemExit(2)
     full_by_key = {g["key"]: g for g in full_index["glosses"]}
 
     copied: list[Path] = []
@@ -73,6 +83,9 @@ def copy_bundles(source: Path, dest: Path, *, glosses: list[str]) -> list[Path]:
         copied.append(dst_bundle)
         kept.append(entry)
 
+    if not kept:
+        print("[prepare_avatar_assets] WARNING: no glosses copied (all requested were missing or input list was empty)", file=sys.stderr)
+
     filtered_index = {"count": len(kept), "glosses": kept}
     (bundles_dst / "index.json").write_text(
         json.dumps(filtered_index, indent=2, ensure_ascii=False) + "\n",
@@ -85,7 +98,7 @@ def write_manifest(dest: Path, *, avatar: str, glosses: list[str]) -> Path:
     """Manifest of what we copied + sha256, for traceability."""
     files: dict[str, str] = {}
     for path in sorted(dest.rglob("*")):
-        if path.is_file() and path.name != "manifest.json":
+        if path.is_file() and path.name != "manifest.json" and not path.name.startswith("."):
             rel = path.relative_to(dest).as_posix()
             files[rel] = _sha256(path)
     manifest = {

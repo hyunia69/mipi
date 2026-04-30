@@ -1,5 +1,4 @@
 import json
-import shutil
 from pathlib import Path
 import pytest
 
@@ -63,17 +62,56 @@ def test_main_idempotent(tmp_path):
     dst = tmp_path / "dst"
     pap.main(["--source", str(src), "--dest", str(dst), "--glosses", "CASA"])
     first = sorted(p.relative_to(dst).as_posix() for p in dst.rglob("*") if p.is_file())
+    first_manifest = json.loads((dst / "manifest.json").read_text())
     pap.main(["--source", str(src), "--dest", str(dst), "--glosses", "CASA"])
     second = sorted(p.relative_to(dst).as_posix() for p in dst.rglob("*") if p.is_file())
     assert first == second
+    manifest1 = first_manifest
+    manifest2 = json.loads((dst / "manifest.json").read_text())
+    assert manifest1 == manifest2
 
 
 def test_main_writes_manifest(tmp_path):
     src = make_fake_source(tmp_path)
     dst = tmp_path / "dst"
+    # Pre-create a .gitkeep in dst to ensure the manifest filter excludes it.
+    dst.mkdir(parents=True, exist_ok=True)
+    (dst / ".gitkeep").write_text("")
     pap.main(["--source", str(src), "--dest", str(dst), "--glosses", "CASA"])
     manifest = json.loads((dst / "manifest.json").read_text())
     assert manifest["avatar"] == "icaro"
     assert manifest["glosses"] == ["CASA"]
     assert "icaro.glb" in manifest["files"]
     assert "bundles/CASA.threejs.json" in manifest["files"]
+    assert ".gitkeep" not in manifest["files"]
+
+
+def test_stale_bundle_removed_on_rerun(tmp_path):
+    src = make_fake_source(tmp_path)
+    dst = tmp_path / "dst"
+    pap.main(["--source", str(src), "--dest", str(dst), "--glosses", "CASA", "AGUA"])
+    assert (dst / "bundles/AGUA.threejs.json").exists()
+    pap.main(["--source", str(src), "--dest", str(dst), "--glosses", "CASA"])
+    assert not (dst / "bundles/AGUA.threejs.json").exists()
+    # And the filtered index.json must reflect the reduced set
+    idx = json.loads((dst / "bundles/index.json").read_text())
+    assert [g["key"] for g in idx["glosses"]] == ["CASA"]
+
+
+def test_copy_bundles_missing_index_exits(tmp_path):
+    src = tmp_path / "src" / "public"
+    (src / "avatars/vlibras/icaro/export").mkdir(parents=True)
+    (src / "avatars/vlibras/icaro/export/icaro.glb").write_bytes(b"x")
+    (src / "animations/vlibras/bundles").mkdir(parents=True)
+    # no index.json
+    with pytest.raises(SystemExit) as exc:
+        pap.copy_bundles(src, tmp_path / "dst", glosses=["CASA"])
+    assert exc.value.code == 2
+
+
+def test_copy_bundles_empty_glosses_warns(tmp_path, capsys):
+    src = make_fake_source(tmp_path)
+    dst = tmp_path / "dst"
+    pap.copy_bundles(src, dst, glosses=[])
+    captured = capsys.readouterr()
+    assert "no glosses copied" in captured.err
