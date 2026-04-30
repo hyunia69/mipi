@@ -121,3 +121,72 @@ kiosk/
 ## 관련 문서
 
 - 상위 저장소의 `archi_design.md` — 추후 **DeepStream + Qt EGLFS 하이브리드** 카메라 파이프라인 통합 계획. `ViewingScreen`의 실사 배경은 DeepStream 카메라 피드로 대체 예정이며, 오버레이 컴포넌트(DetectionBox · CountdownTimer · ZoomControls · LandmarkInfoPanel)는 그대로 재사용된다.
+
+## Avatar widget (Libras sign language)
+
+The kiosk overlays a Brazilian sign-language avatar (Icaro) in the bottom-right
+corner of the menu and live screens. It plays the `CASA` gloss every 8 seconds.
+
+### One-time asset prep
+
+The avatar consumes Three.js animation bundles from a sibling `sls_brazil_player/`
+checkout. Run this once after cloning, and again whenever the gloss list changes:
+
+```bash
+cd kiosk
+python scripts/prepare_avatar_assets.py \
+    --source ../sls_brazil_player/public \
+    --glosses CASA
+```
+
+This populates `kiosk/web/avatar/assets/` (gitignored) with `icaro.glb`,
+`bundles/CASA.threejs.json`, `bundles/index.json`, and a `manifest.json`.
+
+### Toggling at launch
+
+- `--no-avatar`: hide the widget entirely.
+- `--avatar-repeat-ms <int>`: change repeat interval in ms (`0` = play once).
+
+Example: `python main.py --theme holo --avatar-repeat-ms 0` plays the avatar
+once per screen entry instead of looping.
+
+### Jetson EGLFS deployment
+
+The kiosk auto-injects the right Chromium flags for EGLFS when launched with
+`QT_QPA_PLATFORM=eglfs`:
+
+```bash
+QT_QPA_PLATFORM=eglfs python main.py --mode live --theme holo
+```
+
+main.py adds `--use-gl=egl --no-sandbox --disable-gpu-sandbox` to
+`QTWEBENGINE_CHROMIUM_FLAGS` automatically.
+
+### Dev / test dependencies
+
+Test-only packages live in `requirements-dev.txt`:
+
+```bash
+pip install -r requirements-dev.txt
+pytest tests/ -v
+```
+
+The full suite includes pytest-qt + QtWebEngine tests that spin up a headless
+QWebEngineView — these need a desktop on Windows / macOS, but skip cleanly on
+headless CI.
+
+### Pre-flight WebEngine validation on new Jetsons
+
+Run `scripts/spike_webengine.py` once to confirm Chromium boots under EGLFS
+on the target Jetson. Fill in `docs/spike_webengine_results.md` with the
+working environment variables.
+
+### 12-hour soak
+
+Memory leak check before production rollout:
+
+```bash
+ON_JETSON=1 python scripts/soak_avatar.py --hours 12 --out soak.csv
+```
+
+See `docs/soak_results.md` template for what to record.
