@@ -17,3 +17,7 @@ assets/metadata.json
 .claude/
 .DS_Store
 Thumbs.db
+
+# Avatar build artifacts
+web/avatar/assets/*
+!web/avatar/assets/.gitkeep
