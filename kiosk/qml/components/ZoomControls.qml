@@ -5,8 +5,10 @@ Column {
     id: root
     spacing: Theme.spacingXS
 
-    signal zoomIn()
-    signal zoomOut()
+    signal zoomInPressed()
+    signal zoomInReleased()
+    signal zoomOutPressed()
+    signal zoomOutReleased()
 
     Rectangle {
         id: zoomInBtn
@@ -24,10 +26,18 @@ Column {
 
         MouseArea {
             anchors.fill: parent
-            onPressed: zoomInBtn.scale = 0.9
-            onReleased: zoomInBtn.scale = 1.0
-            onCanceled: zoomInBtn.scale = 1.0
-            onClicked: root.zoomIn()
+            onPressed: {
+                zoomInBtn.scale = 0.9
+                root.zoomInPressed()
+            }
+            onReleased: {
+                zoomInBtn.scale = 1.0
+                root.zoomInReleased()
+            }
+            onCanceled: {
+                zoomInBtn.scale = 1.0
+                root.zoomInReleased()
+            }
         }
 
         Behavior on scale { NumberAnimation { duration: 100 } }
@@ -73,10 +83,18 @@ Column {
 
         MouseArea {
             anchors.fill: parent
-            onPressed: zoomOutBtn.scale = 0.9
-            onReleased: zoomOutBtn.scale = 1.0
-            onCanceled: zoomOutBtn.scale = 1.0
-            onClicked: root.zoomOut()
+            onPressed: {
+                zoomOutBtn.scale = 0.9
+                root.zoomOutPressed()
+            }
+            onReleased: {
+                zoomOutBtn.scale = 1.0
+                root.zoomOutReleased()
+            }
+            onCanceled: {
+                zoomOutBtn.scale = 1.0
+                root.zoomOutReleased()
+            }
         }
 
         Behavior on scale { NumberAnimation { duration: 100 } }
