@@ -138,13 +138,13 @@ def test_player_initializes(view):
 
 def test_loads_icaro_avatar(view):
     _wait_until(view, "window.__player && window.__player.ready === true")
-    has_mesh = _eval_js(
-        view,
-        "window.__player.scene.children.some("
-        "o => o.type === 'Group' || o.type === 'SkinnedMesh'"
-        " || (o.children && o.children.length > 0))",
-    )
-    assert has_mesh is True
+    has_skinned_mesh = _eval_js(view, """
+        (function walk(o) {
+            if (o.type === 'SkinnedMesh') return true;
+            return (o.children || []).some(walk);
+        })(window.__player.scene)
+    """)
+    assert has_skinned_mesh is True
 
 
 def test_play_casa_completes(view):
@@ -182,7 +182,47 @@ def test_unknown_gloss_rejects(view):
 
 def test_dispose_releases_resources(view):
     _wait_until(view, "window.__player && window.__player.ready === true")
-    before = _eval_js(view, "window.__player.scene.children.length")
+    has_skinned_before = _eval_js(view, """
+        (function walk(o) {
+            if (o.type === 'SkinnedMesh') return true;
+            return (o.children || []).some(walk);
+        })(window.__player.scene)
+    """)
+    assert has_skinned_before is True
     _eval_js(view, "window.__player.dispose()")
-    after = _eval_js(view, "window.__player.scene.children.length")
-    assert after < before
+    has_skinned_after = _eval_js(view, """
+        (window.__player.scene === null) ? false :
+        (function walk(o) {
+            if (o.type === 'SkinnedMesh') return true;
+            return (o.children || []).some(walk);
+        })(window.__player.scene)
+    """)
+    assert has_skinned_after is False
+
+
+def test_playgloss_interrupt_rejects_previous(view):
+    _wait_until(view, "window.__player && window.__player.ready === true")
+    # Prime the clip cache so the second playGloss doesn't race the first on
+    # _loadGlossClip — we want to test the interrupt path, not the cold-fetch path.
+    _eval_js(view, """
+        window.__primed = false;
+        window.__player.playGloss('CASA').then(() => { window.__primed = true; });
+    """)
+    _wait_until(view, "window.__primed === true", timeout_ms=12000)
+    _eval_js(view, """
+        window.__interruptResult = null;
+        window.__player.playGloss('CASA').then(
+            (n) => window.__interruptResult = 'resolved:' + n,
+            (e) => window.__interruptResult = 'rejected:' + String(e)
+        );
+        // Immediately preempt with another playGloss (will reject the first promise)
+        setTimeout(() => window.__player.playGloss('CASA'), 50);
+    """)
+    result = _wait_until(
+        view,
+        "window.__interruptResult ? window.__interruptResult : false",
+        timeout_ms=5000,
+    )
+    assert result.startswith("rejected:") and "interrupted by:" in result, (
+        f"expected interrupt rejection, got: {result!r}"
+    )

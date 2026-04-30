@@ -20,6 +20,11 @@ export class Player {
     this._clipCache = new Map();
     this._raf = null;
     this._lastT = 0;
+    this._pendingReject = null;
+    this._onCtxLost = null;
+    this._onCtxRestored = null;
+    this._onResizeBound = null;
+    this._tickBound = null;
     // Expose for tests/debugging
     if (typeof window !== "undefined") window.__player = this;
   }
@@ -50,39 +55,57 @@ export class Player {
     this.scene.add(key);
     this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
 
-    // Load avatar GLB
-    await this._loadAvatar(`${ASSETS_BASE}/icaro.glb`);
-
-    // Load bundle index
-    const r = await fetch(`${ASSETS_BASE}/bundles/index.json`);
-    if (!r.ok) throw new Error(`bundles/index.json HTTP ${r.status}`);
-    this._bundleIndex = await r.json();
+    try {
+      await this._loadAvatar(`${ASSETS_BASE}/icaro.glb`);
+      const r = await fetch(`${ASSETS_BASE}/bundles/index.json`);
+      if (!r.ok) throw new Error(`bundles/index.json HTTP ${r.status}`);
+      this._bundleIndex = await r.json();
+    } catch (err) {
+      // Tear down partial allocation so a retry doesn't leak the WebGL context
+      if (this._raf) { cancelAnimationFrame(this._raf); this._raf = null; }
+      if (this.renderer) {
+        try { this.renderer.dispose(); this.renderer.forceContextLoss(); } catch (e) { /* ignore */ }
+        this.renderer = null;
+      }
+      this.scene = null;
+      this.camera = null;
+      throw err;
+    }
 
     // WebGL context loss handler
-    this.canvas.addEventListener("webglcontextlost", (e) => {
+    this._onCtxLost = (e) => {
       e.preventDefault();
       this.onStatus("ctx-lost");
       this.onError("webglcontextlost");
-    }, false);
-    this.canvas.addEventListener("webglcontextrestored", async () => {
+    };
+    this._onCtxRestored = async () => {
       this.onStatus("ctx-restored");
       await this._loadAvatar(`${ASSETS_BASE}/icaro.glb`);
-    }, false);
+      // Defensive: restart the render loop if it stopped
+      if (!this._raf && this._tickBound) {
+        this._lastT = performance.now();
+        this._raf = requestAnimationFrame(this._tickBound);
+      }
+    };
+    this._onResizeBound = () => this._onResize();
 
-    // Resize
-    window.addEventListener("resize", () => this._onResize());
+    this.canvas.addEventListener("webglcontextlost", this._onCtxLost, false);
+    this.canvas.addEventListener("webglcontextrestored", this._onCtxRestored, false);
+    window.addEventListener("resize", this._onResizeBound);
     this._onResize();
 
     // Render loop
     this._lastT = performance.now();
-    const tick = (t) => {
-      const dt = (t - this._lastT) / 1000;
+    this._tickBound = (t) => {
+      const dt = Math.min((t - this._lastT) / 1000, 0.1);
       this._lastT = t;
       if (this.mixer) this.mixer.update(dt);
-      this.renderer.render(this.scene, this.camera);
-      this._raf = requestAnimationFrame(tick);
+      if (this.renderer && this.scene && this.camera) {
+        this.renderer.render(this.scene, this.camera);
+      }
+      this._raf = requestAnimationFrame(this._tickBound);
     };
-    this._raf = requestAnimationFrame(tick);
+    this._raf = requestAnimationFrame(this._tickBound);
 
     this.ready = true;
     this.onStatus("ready");
@@ -126,6 +149,13 @@ export class Player {
   async playGloss(name) {
     if (!this.ready) throw new Error("player not ready");
     const clip = await this._loadGlossClip(name);
+
+    // Reject any in-flight promise from a previous playGloss
+    if (this._pendingReject) {
+      const reject = this._pendingReject;
+      this._pendingReject = null;
+      reject(new Error(`interrupted by: ${name}`));
+    }
     if (this._activeAction) {
       this._activeAction.stop();
     }
@@ -137,9 +167,11 @@ export class Player {
     this._activeAction = action;
     this.onStatus(`play:${name}`);
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+      this._pendingReject = reject;
       const onFinish = (e) => {
         if (e.action === action) {
+          if (this._pendingReject === reject) this._pendingReject = null;
           this.mixer.removeEventListener("finished", onFinish);
           this.onStatus(`done:${name}`);
           this.onFinished(name);
@@ -155,8 +187,26 @@ export class Player {
   }
 
   dispose() {
+    if (this._pendingReject) {
+      const reject = this._pendingReject;
+      this._pendingReject = null;
+      reject(new Error("disposed"));
+    }
     if (this._raf) cancelAnimationFrame(this._raf);
     this._raf = null;
+    if (this._onCtxLost) {
+      this.canvas.removeEventListener("webglcontextlost", this._onCtxLost);
+      this._onCtxLost = null;
+    }
+    if (this._onCtxRestored) {
+      this.canvas.removeEventListener("webglcontextrestored", this._onCtxRestored);
+      this._onCtxRestored = null;
+    }
+    if (this._onResizeBound) {
+      window.removeEventListener("resize", this._onResizeBound);
+      this._onResizeBound = null;
+    }
+    this._tickBound = null;
     if (this.mixer) {
       this.mixer.stopAllAction();
       this.mixer.uncacheRoot(this.avatarRoot);
