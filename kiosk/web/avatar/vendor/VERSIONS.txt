@@ -11,7 +11,10 @@ GLTFLoader.js
   license: MIT
   source:  https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js
   notes:   imports `from 'three'` (handled via import map in index.html)
-           imports `from '../utils/BufferGeometryUtils.js'` (see below)
+           imports `from './utils/BufferGeometryUtils.js'` (see below)
+           PATCHED: relative path changed from `../utils/` to `./utils/` because
+                    we vendored at `vendor/GLTFLoader.js` (one level less than
+                    upstream's `examples/jsm/loaders/`). Re-apply on upgrade.
 
 utils/BufferGeometryUtils.js
   version: three@0.170.0
